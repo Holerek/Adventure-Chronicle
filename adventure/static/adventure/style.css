@@ -1,0 +1,116 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav {
+    font-size:20px;
+    text-align: center;
+    background-color: rgb(225, 152, 152);
+}
+
+.nav a {
+    text-decoration: none;
+    color: black;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+a:hover, .adventure-item:hover {
+    background-color: rgb(100, 181, 154);
+    padding-left: 9px;
+    padding-right: 9px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+.adventure-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    font-size: 40px;
+}
+
+.adventure-item {
+    width: 500px;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin:10px;
+    padding:10px;
+    list-style: none;
+    font-size: 2rem;  
+}
+
+#newAdventure {
+    display: none;
+}
+
+.add {
+    width: 150px;
+    background-color:darkgoldenrod;
+}
+
+
+.adv-contener {
+    display: flex;
+    flex-direction: row;
+    height: 96vh;
+    width: 100vw;
+}
+
+.adv-list {
+    display: flex;
+    flex-direction: column;
+    background-color: bisque;
+    width: 30%;
+    height: 100%;
+    overflow: scroll;
+}
+
+.adv-item {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    margin: 10px;
+    padding: 10px;
+    white-space: pre-wrap;
+}
+
+.adv-item span {
+    margin-bottom: 10px;
+}
+
+.adv-form {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    text-align: center;
+    background-color: darkseagreen;
+}
+
+
+input {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+#map {
+    height: 100%;
+    width: 70%;
+}
+
+.popup {
+    display: none;
+    position: absolute;
+    width: 400px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-width: 5px;
+    border-style: solid;
+    z-index: 500;
+  }

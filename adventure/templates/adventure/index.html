@@ -1,0 +1,32 @@
+{% extends "adventure/layout.html" %}
+{% load static %}
+
+{% block script %}
+    
+    <script src="{% static 'adventure/index.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="adventure-list">
+            Adventure Chronicles
+        {% for adv in adventures %}
+            <div data-id='{{adv.id}}' class="adventure-item">
+                <span>{{adv.title}}</span>
+            </div>
+        {% empty %}
+            <h2>No adventure yet</h2>
+        {% endfor %}
+    </div>
+    <div> 
+        <button class="add" id="newAdventureButton">New Adventure</button>
+    </div>
+    <div id="newAdventure">
+        <form action="{% url 'index' %}" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+{% endblock %}
+
