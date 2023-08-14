@@ -2,13 +2,15 @@
 {% load static %}
 
 {% block script %}
-    
     <script src="{% static 'adventure/index.js' %}"></script>
 {% endblock %}
 
 {% block body %}
-    <div class="adventure-list">
-            Adventure Chronicles
+
+    <h1>Adventure Chronicles</h1>
+
+    {% if user.is_authenticated %}
+
         {% for adv in adventures %}
             <div data-id='{{adv.id}}' class="adventure-item">
                 <span>{{adv.title}}</span>
@@ -16,10 +18,11 @@
         {% empty %}
             <h2>No adventure yet</h2>
         {% endfor %}
-    </div>
+    
     <div> 
         <button class="add" id="newAdventureButton">New Adventure</button>
     </div>
+    
     <div id="newAdventure">
         <form class="adv-form" action="{% url 'index' %}" method="post">
             {% csrf_token %}
@@ -27,6 +30,12 @@
             <input type="submit" value="Submit">
         </form>
     </div>
-
+    {% else %}
+        <div>
+            <span>To create your own adventures please</span>
+            <a href="{% url 'register' %}">Register</a>
+        </div>
+    {% endif %}
+    
 {% endblock %}
 

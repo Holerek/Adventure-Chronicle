@@ -9,7 +9,8 @@ body {
 .nav {
     font-size:20px;
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
+    margin-top: 10px;
 }
 
 .nav a {
@@ -22,21 +23,12 @@ body {
     padding-right: 10px;
 }
 
-.adventure-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    font-size: 40px;
-}
-
 .adventure-item {
-    width: 500px;
+    width: 90%;
     border: 1px solid black;
     border-radius: 10px;
     margin:10px;
     padding:10px;
-    list-style: none;
     font-size: 2rem;  
 }
 
@@ -60,22 +52,27 @@ body {
 
 
 .adv-contener {
+    position: fixed;
+    height:100vh;
+    width: 30vw;
+    left:70% ;
+    top:0;
     display: flex;
-    flex-direction: row;
-    height: 96vh;
-    width: 100vw;
+    flex-direction: column;
+    align-items: center;
 }
 
 .adv-list {
-    display: flex;
-    flex-direction: column;
-    width: 30%;
-    height: 100%;
-    overflow: scroll;
-    margin-left: 10px;
+    /* display: flex;
+    flex-direction: column; */
+    /* width: 30%;
+    height: 100%; */
+    /* overflow: scroll; */
+    /* margin-left: 10px; */
 }
 
 .adv-item, .adv-form{
+    width: 90%;
     display: flex; 
     flex-direction: column;
     border: 2px solid black;
@@ -103,21 +100,21 @@ input {
     margin-top: 5px;
 }
 
-#map {
+/* #map {
     height: 100%;
     width: 68%;
     border-radius: 10px;
     margin:auto;
     overflow: hidden;
-}
+} */
 
-/* #map {
+#map {
     height:100vh;
     width: 70vw;
     position: fixed;
     left:0 ;
     top:0;
-} */
+}
 
 .popup {
     display: none;
@@ -139,9 +136,10 @@ button, .input-button, .adv-form > input[type='submit'] {
     border: 1px solid black;
     border-radius: 5px;
     font-weight: 500;
+    margin-left: auto;
 }
 
-button:hover, .input-button:hover, a:hover {
+button:hover, .input-button:hover, a:hover, .adventure-item:hover {
     box-shadow: 0 2px 10px rgba(32, 33, 36, 0.599);
     cursor: pointer;
 }

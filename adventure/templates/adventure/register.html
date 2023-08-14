@@ -7,22 +7,18 @@
     {% if message %}
         <div>{{ message }}</div>
     {% endif %}
-
-    <form action="{% url 'register' %}" method="post">
+    
+    <form class="adv-form" action="{% url 'register' %}" method="post">
         {% csrf_token %}
-        <div>
-            <input autofocus type="text" name="username" placeholder="Username">
-        </div>
-        <div>
-            <input type="password" name="password" placeholder="Password">
-        </div>
-        <div>
-            <input type="password" name="confirmation" placeholder="Confirm Password">
-        </div>
+        <input autofocus type="text" name="username" placeholder="Username">
+        <input type="password" name="password" placeholder="Password">
+        <input type="password" name="confirmation" placeholder="Confirm Password">
         <input type="submit" value="Register">
     </form>
 
-    Already have an account? 
-    <a href="{% url 'login' %}">Log In here.</a>
+    <div>
+        Already have an account? 
+        <a href="{% url 'login' %}">Log In here.</a>
+    </div>
 
 {% endblock %}

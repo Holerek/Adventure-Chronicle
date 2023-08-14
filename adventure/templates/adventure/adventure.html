@@ -3,25 +3,15 @@
 
 {% block script %}
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-   crossorigin=""/>
-
-<!-- Make sure you put this AFTER Leaflet's CSS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-crossorigin=""></script>
-
 <script src="{% static 'adventure/util.js' %}" type="module"></script>
 <script src="{% static 'adventure/adventure.js' %}" type="module"></script>
-
-
 
 <!-- {{ id|json_script:"id-data"}} -->
 {% endblock %}
 
-{% block body %}
-<div>
+
+
+{% block popup %}
     <div class="popup">
         <form class="adv-form" id="edit-form" action="{% url 'edit day' %}" method="post">
             <h2> Edit Day </h2>
@@ -32,38 +22,35 @@ crossorigin=""></script>
             <input class="input-button" type="submit" value="Save changes"></submit>
         </form>
     </div>
-    <div class="adv-contener">
-        <div id="map"></div>
-        <div class="adv-list">
-            <div class="add-day">
-                <button type="button" id="show-add-day-form">Add Day</button>
-            </div>
-            <form class="adv-form" id="add-day-form" action="{% url 'day' %}" method="post">
-                <h2> New Day </h2>
-                {% csrf_token%}
-                {{ new_day }}
-                <input type="hidden" name="adv_id" value="{{ id }}"></submit>
-                <input class="input-button" type="submit" value="Submit"></submit>
-            </form>
-            {% for day in days %}
-                <div class="adv-item">
-                    {% comment %}
-                    <h3> {{ day.date }} </h3>
-                    {% endcomment %}
-                    <!-- <h3>{{ day.date.year }}-{{ day.date.month }}-{{ day.date.day }}</h3> -->
-                    <h3>{{ day.date|date:"Y-m-d" }}</h3>
-                    <span>{{ day.description }}</span>
-                    <button type="button" class="add" data-id="{{day.id}}" >Edit</button>
-                </div>
-            {% empty %}
-                    <span> No days yet. </span>
-            {% endfor %}
-            </div>
-        </div>
-    </div>
-    
+{% endblock %}
 
-    <script src="{% static 'adventure/map.js' %}" ></script>
+
+
+{% block body %}
+    <div class="add-day">
+        <button type="button" id="show-add-day-form">Add Day</button>
+    </div>
+
+    <form class="adv-form" id="add-day-form" action="{% url 'day' %}" method="post">
+        <h2> New Day </h2>
+        {% csrf_token%}
+        {{ new_day }}
+        <input type="hidden" name="adv_id" value="{{ id }}"></submit>
+        <input class="input-button" type="submit" value="Submit"></submit>
+    </form>
+
+    {% for day in days %}
+        <div class="adv-item">
+            {% comment %}
+            <h3> {{ day.date }} </h3>
+            {% endcomment %}
+            <h3>{{ day.date|date:"Y-m-d" }}</h3>
+            <span>{{ day.description }}</span>
+            <button type="button" class="add" data-id="{{day.id}}" >Edit</button>
+        </div>
+    {% empty %}
+        <span> No days yet. </span>
+    {% endfor %}
 
 {% endblock %}
 
