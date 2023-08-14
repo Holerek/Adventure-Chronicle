@@ -10,10 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const adventures = document.querySelectorAll('.adventure-item')
     adventures.forEach( adv => {
         const children = adv.children;
+        const title = children[0];
         const deleteImg = children[1];
 
         //click to open adventure site
-        adv.onclick = function() {
+        title.onclick = function() {
             window.location.href = "/adventure/" + adv.dataset.id;
         }
 

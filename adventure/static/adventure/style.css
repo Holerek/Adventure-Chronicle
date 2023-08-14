@@ -37,8 +37,11 @@ body {
 .adventure-item > img {
     display:block;
     margin-top: auto;
-    margin-left: auto;
     height: 20px;
+}
+
+.adventure-item > span {
+    padding-right: auto;
 }
 
 #newAdventure {
