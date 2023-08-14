@@ -9,7 +9,7 @@ from django.urls import reverse
 from django import forms
 from .models import Adventure, Day, Location
 
-# Create your views here.
+# Create your views here
 class NewAdventureForm(forms.Form):
     title = forms.CharField(max_length=128)
 
@@ -32,50 +32,63 @@ def index(request):
         #if data is valid then create and save new object
         if form.is_valid():
             data = form.cleaned_data
-            new_adv = Adventure(title=data['title'])
+            new_adv = Adventure(title=data['title'], author = request.user)
             new_adv.save()
         
         return HttpResponseRedirect(reverse('index'))
     
-    adventures = Adventure.objects.all()
+    adventures = Adventure.objects.filter(author = request.user.id)
     return render(request, 'adventure/index.html', {
         'adventures': adventures,
-        'form': NewAdventureForm()
+        'form': NewAdventureForm(),
     })
 
-
+@login_required
 def adventure(request, id):
     
-    #load all days for reqeuested adventure
-    days = Day.objects.filter(adventure = id).order_by("date")
-    d = Day.objects.get(pk=1)
-    return render(request, 'adventure/map.html',{
-        'id': id,
-        'days': days,
-        'new_day': NewDayForm(),
-        'edit_day': EditDayForm(),
+    # check if user is author
+    if request.user == Adventure.objects.get(pk = id).author: 
+        #load all days for reqeuested adventure
+        days = Day.objects.filter(adventure = id).order_by("date")
+        d = Day.objects.get(pk=1)
+        return render(request, 'adventure/adventure.html',{
+            'id': id,
+            'days': days,
+            'new_day': NewDayForm(),
+            'edit_day': EditDayForm(),
+        })
+    
+    return render(request, 'adventure/layout.html', {
+        'message': "Permision Denied!",
     })
-
-
 
 def map(request):
     return render(request, 'adventure/map.html')
 
 
+@login_required
 def day(request):
     if request.method == 'POST':
         form = NewDayForm(request.POST)
-        id = request.POST['id']
+        adv_id = request.POST['adv_id']
         if form.is_valid():
             data = form.cleaned_data
-            new_day = Day(adventure=Adventure.objects.get(pk=id), description=data['description'], date=data['date'])
-            new_day.save()
 
-        return HttpResponseRedirect(f'/adventure/{id}')
+            # check if user is author of adventure
+            if request.user == Adventure.objects.get(pk=adv_id).author:
+                new_day = Day(adventure=Adventure.objects.get(pk=adv_id), description=data['description'], date=data['date'])
+                new_day.save()
+            else:
+                message = 'You are trying to edit someone elses adventure. Pleas stop you are not allowed to do that!'
+                return render(request, 'adventure/layout.html', {
+                    'message': message,
+                })
+
+        return HttpResponseRedirect(f'/adventure/{adv_id}')
 
     return HttpResponseRedirect(reverse('index'))
 
-
+@login_required
 def edit_day(request):
     if request.method == "POST":
         form = EditDayForm(request.POST)
@@ -85,9 +98,16 @@ def edit_day(request):
         if form.is_valid():
             data = form.cleaned_data
             day = Day.objects.get(pk = int(day_id))
-            day.description = data['edit_day_description']
-            day.date = data['edit_day_date']
-            day.save()
+
+            # validate if user is author of adventure and edited day
+            if request.user == day.adventure.author:
+                day.description = data['edit_day_description']
+                day.date = data['edit_day_date']
+                day.save()
+            else:
+                return render(request, 'adventure/layout.html', {
+                    'message': 'You are not allowed to modify someone elses data !!!'
+                })
 
         return HttpResponseRedirect(f'/adventure/{adv_id}')
 

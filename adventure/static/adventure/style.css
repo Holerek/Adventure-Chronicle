@@ -114,3 +114,7 @@ input {
     border-style: solid;
     z-index: 500;
   }
+
+.error {
+    background-color: red;
+}

@@ -23,9 +23,12 @@
                 <a href="{% url 'login' %}">Login</a>
             {% else %}
                 <a href="{% url 'logout' %}">Logout</a>
-                {% endif %}
+            {% endif %}
         </nav>
         <h2>{{request.user.username}}</h2>
+        {% if message is not None %}
+            <h3 class="error">{{ message }}</h3>
+        {% endif %}
             {% block body %}
         {% endblock %}
         

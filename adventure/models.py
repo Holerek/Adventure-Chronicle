@@ -6,6 +6,8 @@ from django.db import models
 
 class Adventure(models.Model):
     title = models.CharField(max_length=128)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_public = models.BooleanField(default=False)
 
 class Day(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE)
