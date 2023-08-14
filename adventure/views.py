@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django import forms
 from .models import Adventure, Day, Location
@@ -64,6 +64,31 @@ def adventure(request, id):
 
 def map(request):
     return render(request, 'adventure/map.html')
+
+
+@login_required
+def delete_adventure(request):
+    if request.method == 'POST':
+        user = request.user
+        data = json.loads(request.body)
+
+        adv_id = int(data['adv_id'])
+        adventure = Adventure.objects.get(pk=adv_id)
+
+        # check if user is author of adventure
+        if user == adventure.author:
+            adventure.delete()
+            print('test')
+            return JsonResponse({
+                'path': reverse('index'),
+            })
+        
+        else:
+            return render(request, 'adventure/layout.html', {
+                'message': "Permision Denied!",
+            })
+    else:
+        return HttpResponseRedirect(reverse('index'))
 
 
 @login_required

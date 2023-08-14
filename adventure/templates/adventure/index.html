@@ -2,7 +2,8 @@
 {% load static %}
 
 {% block script %}
-    <script src="{% static 'adventure/index.js' %}"></script>
+    <script src="{% static 'adventure/util.js' %}" type="module"></script>
+    <script src="{% static 'adventure/index.js' %}" type="module"></script>
 {% endblock %}
 
 {% block body %}
@@ -13,7 +14,9 @@
 
         {% for adv in adventures %}
             <div data-id='{{adv.id}}' class="adventure-item">
-                <span style="margin-right: auto">{{adv.title}}</span>
+                <div>
+                    <span>{{adv.title}}</span>
+                </div>
                 <img src="{% static 'adventure/img/delete.svg' %}" alt="trash icon for delete adventure">
             </div>
         {% empty %}

@@ -1,3 +1,5 @@
+import { getCookie } from "./util.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     
     const button = document.querySelector('#newAdventureButton');
@@ -10,16 +12,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const adventures = document.querySelectorAll('.adventure-item')
     adventures.forEach( adv => {
         const children = adv.children;
-        const title = children[0];
+        const titleDiv = children[0];
         const deleteImg = children[1];
+        const advId = adv.dataset.id;
 
         //click to open adventure site
-        title.onclick = function() {
-            window.location.href = "/adventure/" + adv.dataset.id;
+        titleDiv.onclick = function() {
+            window.location.href = "/adventure/" + advId;
         }
 
+        //delete adventure
         deleteImg.onclick = function() {
-            console.log('test ikonki');
+            fetch('/delete-adventure', {
+                method: 'POST',
+                headers: {'X-CSRFToken': getCookie('csrftoken')},
+                mode: 'same-origin',
+                body: JSON.stringify({
+                    adv_id: advId,
+                })
+            })
+            .then(response => response.json())
+            .then(path => {
+                window.location.href = path.path;
+            });
         }
     })
 })

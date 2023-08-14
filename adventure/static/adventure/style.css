@@ -32,16 +32,19 @@ body {
     font-size: 2rem;  
     display: flex;
     flex-direction: row;
+    z-index: 1;
 }
 
 .adventure-item > img {
     display:block;
+    margin-left: auto;
     margin-top: auto;
     height: 20px;
+    z-index: 5;
 }
 
-.adventure-item > span {
-    padding-right: auto;
+.adventure-item > div {
+    width: 90%;
 }
 
 #newAdventure {
