@@ -30,6 +30,15 @@ body {
     margin:10px;
     padding:10px;
     font-size: 2rem;  
+    display: flex;
+    flex-direction: row;
+}
+
+.adventure-item > img {
+    display:block;
+    margin-top: auto;
+    margin-left: auto;
+    height: 20px;
 }
 
 #newAdventure {
@@ -62,15 +71,6 @@ body {
     align-items: center;
 }
 
-.adv-list {
-    /* display: flex;
-    flex-direction: column; */
-    /* width: 30%;
-    height: 100%; */
-    /* overflow: scroll; */
-    /* margin-left: 10px; */
-}
-
 .adv-item, .adv-form{
     width: 90%;
     display: flex; 
@@ -99,14 +99,6 @@ input {
     margin-bottom: 5px;
     margin-top: 5px;
 }
-
-/* #map {
-    height: 100%;
-    width: 68%;
-    border-radius: 10px;
-    margin:auto;
-    overflow: hidden;
-} */
 
 #map {
     height:100vh;
@@ -143,3 +135,4 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
     box-shadow: 0 2px 10px rgba(32, 33, 36, 0.599);
     cursor: pointer;
 }
+
