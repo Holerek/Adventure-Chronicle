@@ -16,6 +16,7 @@
     
     <body>
         <nav class="nav">
+            <span style="font-weight: bold;">{{request.user.username|title}}:</span>
             <a href="{% url 'index' %}">Home</a>
             <a href="{% url 'map' %}">Map</a>
             {% if not user.is_authenticated %}
@@ -25,7 +26,7 @@
                 <a href="{% url 'logout' %}">Logout</a>
             {% endif %}
         </nav>
-        <h2>{{request.user.username}}</h2>
+
         {% if message is not None %}
             <h3 class="error">{{ message }}</h3>
         {% endif %}

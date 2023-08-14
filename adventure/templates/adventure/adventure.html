@@ -29,26 +29,29 @@ crossorigin=""></script>
             {{ edit_day }}
             <input type="hidden" id="day_id" name="day_id" value=""></submit>
             <input type="hidden" name="adv_id" value="{{ id }}"></submit>
-            <input type="submit" value="Save changes"></submit>
+            <input class="input-button" type="submit" value="Save changes"></submit>
         </form>
     </div>
     <div class="adv-contener">
         <div id="map"></div>
         <div class="adv-list">
-            <button type="button" id="show-add-day-form">Add Day</button>
+            <div class="add-day">
+                <button type="button" id="show-add-day-form">Add Day</button>
+            </div>
             <form class="adv-form" id="add-day-form" action="{% url 'day' %}" method="post">
                 <h2> New Day </h2>
                 {% csrf_token%}
                 {{ new_day }}
                 <input type="hidden" name="adv_id" value="{{ id }}"></submit>
-                <input type="submit" value="Submit"></submit>
+                <input class="input-button" type="submit" value="Submit"></submit>
             </form>
             {% for day in days %}
                 <div class="adv-item">
                     {% comment %}
                     <h3> {{ day.date }} </h3>
                     {% endcomment %}
-                    <h3> {{ day.date.year }}-{{ day.date.month }}-{{ day.date.day }} </h3>
+                    <!-- <h3>{{ day.date.year }}-{{ day.date.month }}-{{ day.date.day }}</h3> -->
+                    <h3>{{ day.date|date:"Y-m-d" }}</h3>
                     <span>{{ day.description }}</span>
                     <button type="button" class="add" data-id="{{day.id}}" >Edit</button>
                 </div>

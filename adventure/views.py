@@ -14,12 +14,12 @@ class NewAdventureForm(forms.Form):
     title = forms.CharField(max_length=128)
 
 class NewDayForm(forms.Form):
-    date = forms.DateField()
-    description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={ 'autofocus': 'true', }) , strip=True,)
+    date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'YYYY-MM-DD', 'maxlength': '10'},))
+    description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={ 'autofocus': 'true', 'placeholder': 'Descripe your day :)'}) , strip=True,)
 
 class EditDayForm(forms.Form):
-    edit_day_date = forms.DateField()
-    edit_day_description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={ 'autofocus': 'true', }) , strip=True,)
+    edit_day_date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'YYYY-MM-DD', 'maxlength': '10'},))
+    edit_day_description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={ 'autofocus': 'true', 'placeholder': 'YYYY-MM-DD'}) , strip=True,)
 
 
 

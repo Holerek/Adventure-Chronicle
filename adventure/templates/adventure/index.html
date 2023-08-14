@@ -21,7 +21,7 @@
         <button class="add" id="newAdventureButton">New Adventure</button>
     </div>
     <div id="newAdventure">
-        <form action="{% url 'index' %}" method="post">
+        <form class="adv-form" action="{% url 'index' %}" method="post">
             {% csrf_token %}
             {{ form }}
             <input type="submit" value="Submit">
