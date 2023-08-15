@@ -142,3 +142,13 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
     cursor: pointer;
 }
 
+.line {
+    display: flex;
+    flex-direction: row;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.line > h2 {
+    margin: 0px;
+}

@@ -2,12 +2,13 @@ import { getCookie } from "./util.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    const button = document.querySelector('#newAdventureButton');
-    button.onclick = () => {
-        const div = document.querySelector('#newAdventure');
-        div.style.display = "block";
-        button.style.display = "none";
-    }
+    document.querySelector('#newAdventureButton').onclick = showAddAdventureForm;
+    // const button = document.querySelector('#newAdventureButton');
+    // button.onclick = () => {
+    //     const div = document.querySelector('#newAdventure');
+    //     div.style.display = "block";
+    //     button.style.display = "none";
+    // }
 
     const adventures = document.querySelectorAll('.adventure-item')
     adventures.forEach( adv => {
@@ -32,9 +33,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             })
             .then(response => response.json())
-            .then(path => {
-                window.location.href = path.path;
+            .then(message => {
+                console.log(message);
+                adv.remove()
             });
         }
     })
 })
+
+
+function showAddAdventureForm() {
+    const form = document.querySelector("#newAdventure");
+    const button = document.getElementById("newAdventureButton");
+
+    if (form.style.display == "none") {
+        form.style.display = "block";
+        button.innerHTML = "Hide";
+    } else {
+        form.style.display = "none";
+        button.innerHTML = "New Adventure";
+    }
+}

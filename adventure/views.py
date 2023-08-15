@@ -43,6 +43,7 @@ def index(request):
         'form': NewAdventureForm(),
     })
 
+
 @login_required
 def adventure(request, id):
     
@@ -50,7 +51,7 @@ def adventure(request, id):
     if request.user == Adventure.objects.get(pk = id).author: 
         #load all days for reqeuested adventure
         days = Day.objects.filter(adventure = id).order_by("date")
-        d = Day.objects.get(pk=1)
+
         return render(request, 'adventure/adventure.html',{
             'id': id,
             'days': days,
@@ -72,15 +73,14 @@ def delete_adventure(request):
         user = request.user
         data = json.loads(request.body)
 
-        adv_id = int(data['adv_id'])
+        adv_id = data['adv_id']
         adventure = Adventure.objects.get(pk=adv_id)
 
         # check if user is author of adventure
         if user == adventure.author:
             adventure.delete()
-            print('test')
             return JsonResponse({
-                'path': reverse('index'),
+                'message': f'Adventure (id={adv_id}) has been deleted',
             })
         
         else:
