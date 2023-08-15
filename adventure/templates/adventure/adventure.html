@@ -44,9 +44,6 @@
 
     {% for day in days %}
         <div class="adv-item">
-            {% comment %}
-            <h3> {{ day.date }} </h3>
-            {% endcomment %}
             <h3>{{ day.date|date:"Y-m-d" }}</h3>
             <span>{{ day.description }}</span>
             <button type="button" class="add" data-id="{{day.id}}" >Edit</button>
