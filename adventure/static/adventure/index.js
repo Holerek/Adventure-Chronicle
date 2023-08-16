@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //delete adventure
         deleteImg.onclick = function() {
-            fetch('/delete-adventure', {
-                method: 'POST',
+            fetch('/create-adventure', {
+                method: 'DELETE',
                 headers: {'X-CSRFToken': getCookie('csrftoken')},
                 mode: 'same-origin',
                 body: JSON.stringify({

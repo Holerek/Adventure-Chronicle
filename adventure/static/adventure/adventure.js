@@ -6,6 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-day-form').style.display = 'none';
     document.getElementById('show-add-day-form').onclick = showAddDayForm;
     document.getElementById("edit-day-cancel").onclick = hidePopup;
+    // const form = document.getElementById('add-day-form');
+    // form.onclick = () => {
+    //     form.submit;
+    //     return false;
+    // }
+    // document.getElementById('add-day-form').onsubmit = () => { return false };
 
 
     const divs = document.querySelectorAll('.adv-item');

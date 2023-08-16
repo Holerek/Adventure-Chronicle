@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django import forms
@@ -25,18 +25,6 @@ class EditDayForm(forms.Form):
 
 def index(request):
     
-    #post request create new adventure in db
-    if request.method == "POST":
-        form = NewAdventureForm(request.POST)
-        
-        #if data is valid then create and save new object
-        if form.is_valid():
-            data = form.cleaned_data
-            new_adv = Adventure(title=data['title'], author = request.user)
-            new_adv.save()
-        
-        return HttpResponseRedirect(reverse('index'))
-    
     adventures = Adventure.objects.filter(author = request.user.id)
     return render(request, 'adventure/index.html', {
         'adventures': adventures,
@@ -45,8 +33,15 @@ def index(request):
 
 
 @login_required
-def adventure(request, id):
+def adventure(request, id, message=None):
     
+    # check if there is a message
+    try:
+        message = request.GET['message']
+    except:
+        pass
+    
+
     # check if user is author
     if request.user == Adventure.objects.get(pk = id).author: 
         #load all days for reqeuested adventure
@@ -57,19 +52,32 @@ def adventure(request, id):
             'days': days,
             'new_day': NewDayForm(),
             'edit_day': EditDayForm(),
+            'message': message,
         })
     
     return render(request, 'adventure/layout.html', {
         'message': "Permision Denied!",
     })
 
+
 def map(request):
     return render(request, 'adventure/map.html')
 
 
 @login_required
-def delete_adventure(request):
-    if request.method == 'POST':
+def create_adventure(request):
+     #post request create new adventure in db
+    if request.method == "POST":
+        form = NewAdventureForm(request.POST)
+        
+        #if data is valid then create and save new object
+        if form.is_valid():
+            data = form.cleaned_data
+            new_adv = Adventure(title=data['title'], author = request.user)
+            new_adv.save()
+        
+        
+    if request.method == "DELETE":
         user = request.user
         data = json.loads(request.body)
 
@@ -83,12 +91,7 @@ def delete_adventure(request):
                 'message': f'Adventure (id={adv_id}) has been deleted',
             })
         
-        else:
-            return render(request, 'adventure/layout.html', {
-                'message': "Permision Denied!",
-            })
-    else:
-        return HttpResponseRedirect(reverse('index'))
+    return redirect(reverse('index'))
 
 
 @login_required
@@ -96,6 +99,8 @@ def day(request):
     if request.method == 'POST':
         form = NewDayForm(request.POST)
         adv_id = request.POST['adv_id']
+        reload_path = reverse('adventure', args=[adv_id])
+        
         if form.is_valid():
             data = form.cleaned_data
 
@@ -103,15 +108,21 @@ def day(request):
             if request.user == Adventure.objects.get(pk=adv_id).author:
                 new_day = Day(adventure=Adventure.objects.get(pk=adv_id), description=data['description'], date=data['date'])
                 new_day.save()
+            
+            # message for not authenticated user
             else:
-                message = 'You are trying to edit someone elses adventure. Pleas stop you are not allowed to do that!'
-                return render(request, 'adventure/layout.html', {
-                    'message': message,
-                })
+                return redirect(reload_path + '?message=Think again!!!')
+            
+            # reload page after successful update
+            return redirect(reload_path)
+        
+        # invalid data message
+        else:
+            return redirect(reload_path + '?message=Invalid date!')
 
-        return HttpResponseRedirect(f'/adventure/{adv_id}')
-
+    # go back to main page after GET request
     return HttpResponseRedirect(reverse('index'))
+
 
 @login_required
 def edit_day(request):
@@ -120,6 +131,8 @@ def edit_day(request):
         adv_id = request.POST['adv_id']
         day_id = request.POST['day_id']
         
+        reload_path = reverse('adventure', args=[adv_id])
+
         if form.is_valid():
             data = form.cleaned_data
             day = Day.objects.get(pk = int(day_id))
@@ -129,14 +142,21 @@ def edit_day(request):
                 day.description = data['edit_day_description']
                 day.date = data['edit_day_date']
                 day.save()
+            # message for not authenticated user
             else:
-                return render(request, 'adventure/layout.html', {
-                    'message': 'You are not allowed to modify someone elses data !!!'
-                })
+                return redirect(reload_path + '?message=Think again!!!')
+            
+            # reload page after successful update
+            return redirect(reload_path)
+        
+        # invalid data message
+        else:
+            return redirect(reload_path + '?message=Invalid date!')
 
-        return HttpResponseRedirect(f'/adventure/{adv_id}')
+    # go back to main page after GET request
+    return redirect(reverse('index'))
 
-    return HttpResponseRedirect(reverse('index'))
+
 
 
 def login_view(request):
@@ -157,6 +177,7 @@ def login_view(request):
             })
     else:
         return render(request, 'adventure/login.html')
+
 
 def logout_view(request):
     logout(request)

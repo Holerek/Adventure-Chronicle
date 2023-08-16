@@ -39,7 +39,7 @@
         {% csrf_token%}
         {{ new_day }}
         <input type="hidden" name="adv_id" value="{{ id }}"></submit>
-        <input class="input-button" type="submit" value="Submit"></submit>
+        <input class="input-button" id="submit-new-day" type="submit" value="Submit"></submit>
     </form>
 
     {% for day in days %}
