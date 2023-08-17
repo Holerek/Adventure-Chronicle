@@ -23,6 +23,5 @@ class Location(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=5000)
-    day = models.ManyToManyField(Day, related_name="locations")
     lat = models.FloatField()
     lon = models.FloatField()

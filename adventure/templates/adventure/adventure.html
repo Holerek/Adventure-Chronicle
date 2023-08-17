@@ -48,6 +48,20 @@
             <span>{{ day.description }}</span>
             <button type="button" class="add" data-id="{{day.id}}" >Edit</button>
         </div>
+        
+        
+        <div class="location-list">
+            <div>
+                <button type="button" class="add-location" data-id="{{day.id}}" >Add Location</button>
+            </div>
+            <div class="location">
+                <strong>Title</strong>
+                <img href="#" alt="No image yet">
+                <span>Description</span>
+            </div>
+        </div>
+
+
     {% empty %}
         <span> No days yet. </span>
     {% endfor %}

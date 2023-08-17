@@ -6,6 +6,20 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap'
 }).addTo(map);
 
+var addLocationStatus = false;
+
+addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.add-location').forEach( button => {
+        button.onclick = function() {
+            addLocationStatus = true;
+            console.log(button.dataset.id);
+        }
+    })
+    
+})
+
+
+
 var mainMarker = null;
 var mainPopup = L.popup();
 
@@ -22,7 +36,13 @@ function onMapClick(e) {
     mainMarker = L.marker([lat, lng]).addTo(map);
 
     // bind popup to marker
-    mainMarker.bindPopup(e.latlng.toString()).openPopup()
+    if (addLocationStatus === false) {
+        mainMarker.bindPopup("normal popup").openPopup();
+    }
+    else if (addLocationStatus === true) {
+        mainMarker.bindPopup("add location popup").openPopup();
+        
+    }
     
     // mainPopup.setContent("test")
     //     .setLatLng(e.latlng)

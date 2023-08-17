@@ -51,7 +51,7 @@ body {
     display: none;
 }
 
-.add {
+.add  {
     width: fit-content;
     background-color:rgb(220, 211, 183);
 }
@@ -79,11 +79,13 @@ body {
 }
 
 .adv-item, .adv-form{
-    width: 90%;
+    width: calc(100% - 44px);
     display: flex; 
     flex-direction: column;
     border: 2px solid black;
     margin: 10px;
+    margin-top: 20px;
+    margin-bottom: 0px;
     padding: 10px;
     white-space: pre-wrap;
     background-color: rgb(221, 221, 221);
@@ -130,12 +132,15 @@ input {
 }
 
 button, .input-button, .adv-form > input[type='submit'] {
-    width: fit-content;
     padding: 10px;
     border: 1px solid black;
     border-radius: 5px;
     font-weight: 500;
     margin-left: auto;
+}
+
+.add-location {
+    background-color: lightgreen;
 }
 
 button:hover, .input-button:hover, a:hover, .adventure-item:hover {
@@ -152,4 +157,29 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
 
 .line > h2 {
     margin: 0px;
+}
+
+.location-list {
+    background-color: beige;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: calc(100% - 20px);
+    margin:10px;
+    margin-top: 0px;
+    padding-top: 10px;
+    /* display: none; */
+}
+
+.location {
+    display: flex;
+    flex-direction: column;
+    
+    background-color: aquamarine;
+    margin-top: 10px;
+}
+
+.location > * {
+    margin-top: 5px;
 }
