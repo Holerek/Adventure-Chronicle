@@ -42,6 +42,10 @@
         <input class="input-button" id="submit-new-day" type="submit" value="Submit"></submit>
     </form>
 
+    <form id="new-location-form" class="adv-form">
+        {{ new_location }}
+    </form>
+
     {% for day in days %}
         <div class="adv-item">
             <h3>{{ day.date|date:"Y-m-d" }}</h3>
@@ -54,6 +58,7 @@
             <div>
                 <button type="button" class="add-location" data-id="{{day.id}}" >Add Location</button>
             </div>
+            
             <div class="location">
                 <strong>Title</strong>
                 <img href="#" alt="No image yet">

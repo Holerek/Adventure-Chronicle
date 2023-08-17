@@ -21,6 +21,8 @@ class EditDayForm(forms.Form):
     edit_day_date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'YYYY-MM-DD', 'maxlength': '10'},))
     edit_day_description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={ 'autofocus': 'true', 'placeholder': 'YYYY-MM-DD'}) , strip=True,)
 
+class NewLocationForm(forms.Form):
+    name = forms.CharField(max_length=5000, widget=forms.TextInput(attrs={'placeholder': 'Title',}))
 
 
 def index(request):
@@ -44,7 +46,7 @@ def adventure(request, id, message=None):
 
     # check if user is author
     if request.user == Adventure.objects.get(pk = id).author: 
-        #load all days for reqeuested adventure
+        #load all days for requested adventure
         days = Day.objects.filter(adventure = id).order_by("date")
 
         return render(request, 'adventure/adventure.html',{
@@ -52,11 +54,12 @@ def adventure(request, id, message=None):
             'days': days,
             'new_day': NewDayForm(),
             'edit_day': EditDayForm(),
+            'new_location': NewLocationForm(),
             'message': message,
         })
     
     return render(request, 'adventure/layout.html', {
-        'message': "Permision Denied!",
+        'message': "Permission Denied!",
     })
 
 

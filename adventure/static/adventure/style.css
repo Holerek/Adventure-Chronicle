@@ -183,3 +183,7 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
 .location > * {
     margin-top: 5px;
 }
+
+#new-location-form {
+    display: none;
+}
