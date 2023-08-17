@@ -43,7 +43,9 @@
     </form>
 
     <form id="new-location-form" class="adv-form">
+        {% csrf_token %}
         {{ new_location }}
+        <input class="input-button" id="submit-new-location" type="submit" value="Submit"></submit>
     </form>
 
     {% for day in days %}

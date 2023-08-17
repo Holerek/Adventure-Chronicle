@@ -15,14 +15,18 @@ class NewAdventureForm(forms.Form):
 
 class NewDayForm(forms.Form):
     date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'YYYY-MM-DD', 'maxlength': '10'},))
-    description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={ 'autofocus': 'true', 'placeholder': 'Descripe your day :)'}) , strip=True,)
+    description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={ 'autofocus': 'true', 'placeholder': 'Describe your day :)'}) , strip=True,)
 
 class EditDayForm(forms.Form):
     edit_day_date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'YYYY-MM-DD', 'maxlength': '10'},))
     edit_day_description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={ 'autofocus': 'true', 'placeholder': 'YYYY-MM-DD'}) , strip=True,)
 
 class NewLocationForm(forms.Form):
-    name = forms.CharField(max_length=5000, widget=forms.TextInput(attrs={'placeholder': 'Title',}))
+    new_location_name = forms.CharField(max_length=5000, strip=True, widget=forms.TextInput(attrs={'placeholder': 'Title', 'autofocus': 'true'}))
+    new_location_description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={'placeholder': 'Description',}) , strip=True,)
+    new_location_lat = forms.FloatField(widget=forms.NumberInput(attrs={'type': 'hidden',}))
+    new_location_lng = forms.FloatField(widget=forms.NumberInput(attrs={'type': 'hidden',}))
+    # img = forms.ImageField()
 
 
 def index(request):
@@ -61,10 +65,6 @@ def adventure(request, id, message=None):
     return render(request, 'adventure/layout.html', {
         'message': "Permission Denied!",
     })
-
-
-def map(request):
-    return render(request, 'adventure/map.html')
 
 
 @login_required
@@ -158,6 +158,55 @@ def edit_day(request):
 
     # go back to main page after GET request
     return redirect(reverse('index'))
+
+
+@login_required
+def location(request):
+    
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        day = Day.objects.get(pk=data['day_id'])
+        print(data)
+        # validate if user is and author of day
+        if request.user == day.adventure.author:
+            new_location = Location(
+                day = day,
+                adventure = day.adventure,
+                name = data['name'],
+                description = data['description'],
+                lat = data['lat'],
+                lon = data['lng']
+            )
+            new_location.save()
+            print(Location.objects.all())
+            return JsonResponse({
+                'message': 'Location added'
+            })
+
+    return redirect(reverse('index'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

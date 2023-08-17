@@ -1,3 +1,10 @@
+import { getCookie } from "./util.js";
+
+// variable to control state or behavior of functions
+var addLocationStatus = false;
+var addLocationDay = undefined;
+
+
 
 // initialize the map
 var map = L.map('map').setView([51.112, 17.036], 13);
@@ -6,12 +13,19 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap'
 }).addTo(map);
 
-var addLocationStatus = false;
 
+addEventListener('DOMContentLoaded', () => {
+    document.getElementById('new-location-form').onsubmit = addLocation;
+})
+
+
+
+// show add location form for each day
 addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.add-location').forEach( button => {
         button.onclick = function() {
 
+            // show new location form by selecting and moving form element
             const newLocationForm = document.getElementById('new-location-form');
             newLocationForm.style.marginTop = '10px'
             newLocationForm.style.marginBottom = '10px'
@@ -19,20 +33,34 @@ addEventListener('DOMContentLoaded', function() {
             const parent = button.parentElement.parentElement;
             parent.prepend(newLocationForm);
             newLocationForm.style.display = 'flex';
-            // parent.appendChild(newLocationForm);
-            // document.getElementById('test').appendChild(newLocationForm);
 
-            // var fragment = document.createDocumentFragment();
-            // fragment.appendChild(document.getElementById('add-location-form'));
-            // document.getElementById('map').appendChild(fragment);
-
-            // const parent = button.parentElement;
-            // parent.appendChild();
+            // activate optional feature of onMapClick function
             addLocationStatus = true;
+            addLocationDay = button.dataset.id;
         }
     })
     
 })
+
+// headers:{'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')},
+
+function addLocation() {
+    fetch('/location', {
+        method: 'POST',
+        headers:{'X-CSRFToken': getCookie('csrftoken')},
+        mode: 'same-origin',
+        body: JSON.stringify({
+            day_id: addLocationDay,
+            name: document.getElementById('id_new_location_name').value,
+            description: document.getElementById('id_new_location_description').value,
+            lat: document.getElementById('id_new_location_lat').value,
+            lng: document.getElementById('id_new_location_lng').value,
+        })
+    })
+    // .then( response => console.log(response.json()))
+
+    return false
+}
 
 
 
@@ -57,7 +85,8 @@ function onMapClick(e) {
     }
     else if (addLocationStatus === true) {
         mainMarker.bindPopup("add location popup").openPopup();
-
+        document.getElementById('id_new_location_lat').value = lat;
+        document.getElementById('id_new_location_lng').value = lng;
     }
     
     // mainPopup.setContent("test")
