@@ -6,14 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-day-form').style.display = 'none';
     document.getElementById('show-add-day-form').onclick = showAddDayForm;
     document.getElementById("edit-day-cancel").onclick = hidePopup;
-    // const form = document.getElementById('add-day-form');
-    // form.onclick = () => {
-    //     form.submit;
-    //     return false;
-    // }
-    // document.getElementById('add-day-form').onsubmit = () => { return false };
-
-
+    
     const divs = document.querySelectorAll('.adv-item');
     
     divs.forEach(div => {
@@ -49,21 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const mapView = document.querySelector("#map");
             mapView.style.opacity = 0.5;
             mapView.style.pointerEvents = "none";
-
-            
-
-
-
-            //     fetch('/edit-day', {
-            //         method: "POST",
-            //         headers: {'X-CSRFToken': getCookie('csrftoken')},
-            //         mode: 'same-origin',
-            //         body: JSON.stringify({
-            //             date: newDate,
-            //             description: newDescription,
-            //             id: editButton.dataset.id,
-            //         })
-            //     })
         }
     })
 })
