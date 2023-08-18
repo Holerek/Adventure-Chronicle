@@ -24,7 +24,7 @@ body {
 }
 
 .adventure-item {
-    width: 90%;
+    width: calc(100% - 44px);
     border: 1px solid black;
     border-radius: 10px;
     margin:10px;
@@ -44,10 +44,11 @@ body {
 }
 
 .adventure-item > div {
-    width: 90%;
+    width: calc(100% - 44px);
 }
 
 #newAdventure {
+    width: 100%;
     display: none;
 }
 
@@ -78,7 +79,7 @@ body {
     overflow: scroll;
 }
 
-.adv-item, .adv-form{
+.adv-item, .adv-form {
     width: calc(100% - 44px);
     display: flex; 
     flex-direction: column;
@@ -141,6 +142,8 @@ button, .input-button, .adv-form > input[type='submit'] {
 
 .add-location {
     background-color: lightgreen;
+    display: block;
+    margin: auto;
 }
 
 button:hover, .input-button:hover, a:hover, .adventure-item:hover {
@@ -160,30 +163,59 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
 }
 
 .location-list {
-    background-color: beige;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    padding-top: 10px; 
+    display: none;
+}
+
+.location-item{
     width: calc(100% - 20px);
-    margin:10px;
-    margin-top: 0px;
-    padding-top: 10px;
-    /* display: none; */
+    display: flex; 
+    flex-direction: column;
+    border-top: 2px solid black;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    padding: 10px;
+    white-space: pre-wrap;
+    background-color: rgb(221, 221, 221);
+
 }
 
 .location {
     display: flex;
     flex-direction: column;
-    
-    background-color: aquamarine;
     margin-top: 10px;
+    background-color: rgb(221, 221, 221);
+
 }
 
 .location > * {
     margin-top: 5px;
 }
 
+.location > img {
+    max-width: 50%;
+   
+}
+
+
 #new-location-form {
+    
     display: none;
 }
+
+.w100 {
+    width: 100%;
+    
+}
+
+.show-more {
+    padding-top: 10px;
+    max-height: 15px;
+    cursor: pointer;
+}
+

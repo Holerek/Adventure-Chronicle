@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('show-add-day-form').onclick = showAddDayForm;
     document.getElementById("edit-day-cancel").onclick = hidePopup;
     
+    // activate show more arrows
+    showMore()
+
+
     const divs = document.querySelectorAll('.adv-item');
     
     divs.forEach(div => {
@@ -74,4 +78,19 @@ function hidePopup() {
     const mapView = document.querySelector("#map");
     mapView.style.opacity = 1;
     mapView.style.pointerEvents = "auto";
+}
+
+
+function showMore() {
+    const showMoreArrows = document.querySelectorAll('.show-more');
+
+    showMoreArrows.forEach( arrow => {
+        arrow.onclick = function() {
+            const parent = arrow.parentElement;
+            const parentChildren = parent.children;
+            
+            const locationList = parentChildren[4];
+            locationList.style.display = "flex";
+        }
+    })
 }

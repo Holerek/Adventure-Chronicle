@@ -52,10 +52,15 @@ def adventure(request, id, message=None):
     if request.user == Adventure.objects.get(pk = id).author: 
         #load all days for requested adventure
         days = Day.objects.filter(adventure = id).order_by("date")
+        days_and_locations = []
+        # add locations to days
+        for i in range(len(days)):
+            locations = Location.objects.filter(day=days[i])
+            days_and_locations.append([days[i], locations])
 
         return render(request, 'adventure/adventure.html',{
             'id': id,
-            'days': days,
+            'days': days_and_locations,
             'new_day': NewDayForm(),
             'edit_day': EditDayForm(),
             'new_location': NewLocationForm(),

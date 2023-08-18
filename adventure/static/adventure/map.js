@@ -30,7 +30,7 @@ addEventListener('DOMContentLoaded', function() {
             newLocationForm.style.marginTop = '10px'
             newLocationForm.style.marginBottom = '10px'
 
-            const parent = button.parentElement.parentElement;
+            const parent = button.parentElement;
             parent.prepend(newLocationForm);
             newLocationForm.style.display = 'flex';
 
@@ -95,6 +95,9 @@ function onMapClick(e) {
 
 
 }
+
+const value = JSON.parse(document.getElementById('markers-data').textContent);
+console.log(value)
 
 
 map.on('click', onMapClick);

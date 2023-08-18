@@ -6,7 +6,7 @@
 <script src="{% static 'adventure/util.js' %}" type="module"></script>
 <script src="{% static 'adventure/adventure.js' %}" type="module"></script>
 
-<!-- {{ id|json_script:"id-data"}} -->
+<!-- {{ id|json_script:"markers-data"}} -->
 {% endblock %}
 
 
@@ -48,26 +48,30 @@
         <input class="input-button" id="submit-new-location" type="submit" value="Submit"></submit>
     </form>
 
-    {% for day in days %}
+    {% for day, locations in days %}
         <div class="adv-item">
             <h3>{{ day.date|date:"Y-m-d" }}</h3>
             <span>{{ day.description }}</span>
             <button type="button" class="add" data-id="{{day.id}}" >Edit</button>
-        </div>
+            <img class="show-more" src="{% static 'adventure/img/delete.svg' %}" alt="show location arrow">
         
         
-        <div class="location-list">
-            <div>
-                <button type="button" class="add-location" data-id="{{day.id}}" >Add Location</button>
-            </div>
             
-            <div class="location">
-                <strong>Title</strong>
-                <img href="#" alt="No image yet">
-                <span>Description</span>
+            <div class="location-list">
+                <button type="button" class="add-location" data-id="{{day.id}}" >Add Location</button>
+                {% for location in locations %}
+                    <div class="location-item location">
+                        <strong>{{location.name}}</strong>
+                        <img src="https://media.istockphoto.com/id/1198461597/pl/zdj%C4%99cie/dubrownik.jpg?s=612x612&w=0&k=20&c=jcN1KEbmZnkRLDJ71yhjqo8TmQ7B6GKmEw5nOWfCT9Q=" alt="No image yet">
+                        <span>{{location.description}}</span>
+                    </div>
+                {% empty %}
+                    <div class="location-list">
+                        <span>No location yet.</span>
+                    </div>
+                {% endfor %}
             </div>
         </div>
-
 
     {% empty %}
         <span> No days yet. </span>
