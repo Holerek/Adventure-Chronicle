@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // activate show more arrows
     showMore()
+    loadMarkers()
 
 
     const divs = document.querySelectorAll('.adv-item');
@@ -90,7 +91,15 @@ function showMore() {
             const parentChildren = parent.children;
             
             const locationList = parentChildren[4];
-            locationList.style.display = "flex";
+
+            if (locationList.style.display === "none") {
+                locationList.style.display = "flex";
+            }
+            else {
+                locationList.style.display = "none";
+            }
         }
     })
 }
+
+
