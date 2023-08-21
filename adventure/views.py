@@ -184,12 +184,27 @@ def edit_day(request):
 
 
 @login_required
+def delete_day(request):
+
+    if request.method == "POST":
+        data = json.loads(request.body)
+        day = Day.objects.get(pk=data['day_id'])
+
+        if request.user == day.adventure.author:
+            day.delete()
+            return JsonResponse({'message': 'Deletion completed'})
+    
+    # go back to main page after GET request
+    return redirect(reverse('index'))
+
+
+@login_required
 def location(request):
     
     if request.method == 'POST':
         data = json.loads(request.body)
         day = Day.objects.get(pk=data['day_id'])
-        print(data)
+        
         # validate if user is and author of day
         if request.user == day.adventure.author:
             new_location = Location(
@@ -201,7 +216,7 @@ def location(request):
                 lon = data['lng']
             )
             new_location.save()
-            print(Location.objects.all())
+            
             return JsonResponse({
                 'message': 'Location added'
             })

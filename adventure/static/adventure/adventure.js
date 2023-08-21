@@ -1,11 +1,16 @@
 import {getCookie} from "./util.js";
 
 
+//
+var activeEditDayPopup = undefined;
+
+
 document.addEventListener('DOMContentLoaded', () => {
     
     document.getElementById('add-day-form').style.display = 'none';
     document.getElementById('show-add-day-form').onclick = showAddDayForm;
     document.getElementById("edit-day-cancel").onclick = hidePopup;
+    document.getElementById("edit-day-delete").onclick = deleteDay;
     
     // activate show more arrows
     showMore();
@@ -14,19 +19,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const divs = document.querySelectorAll('.adv-item');
     
     divs.forEach(div => {
-        const childs = div.children;
-        const editButton = childs[2];
-        const date = childs[0];
-        const description = childs[1];
+        const children = div.children;
+        const editButton = children[2];
+        const date = children[0];
+        const description = children[1];
         // const text = description.innerHTML;
 
+        
+
         editButton.onclick = function() {
+            //update activeEditDayPopup value 
+            activeEditDayPopup = div;
 
             //show popup
             const popup = document.querySelector('.popup');
             popup.style.display = 'block';
 
-            //selext edit day input fields
+            //select edit day input fields
             const editDayForm = document.querySelector("#edit-form")
             const popupChilds = editDayForm.children;
             const editDate = popupChilds[3];
@@ -46,6 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const mapView = document.querySelector("#map");
             mapView.style.opacity = 0.5;
             mapView.style.pointerEvents = "none";
+
+            
         }
     })
 })
@@ -78,6 +89,9 @@ function hidePopup() {
     const mapView = document.querySelector("#map");
     mapView.style.opacity = 1;
     mapView.style.pointerEvents = "auto";
+
+    //clear activeEditDayPopup value
+    activeEditDayPopup = undefined;
 }
 
 
@@ -102,3 +116,23 @@ function showMore() {
 }
 
 
+function deleteDay() {
+    const dayId = document.getElementById('day_id').value;
+    
+    fetch('/delete-day', {
+        method: 'POST',
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        mode: 'same-origin',
+        body: JSON.stringify({
+            day_id: dayId,
+        })
+    })
+    .then(response => response.json())
+    .then(message => alert(message.message))
+    
+    //remove delete day div
+    activeEditDayPopup.remove();
+    
+    //hide popup and reset activeEditDayPopup value 
+    hidePopup();
+}

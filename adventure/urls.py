@@ -12,6 +12,7 @@ urlpatterns = [
     #API routes
     path('day', views.day, name='day'),
     path('edit-day', views.edit_day, name='edit day'),
+    path('delete-day', views.delete_day, name='delete day'),
     path('create-adventure', views.create_adventure, name='create adventure'),
     path('location', views.location, name='location'),
 ]

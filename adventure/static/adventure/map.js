@@ -25,19 +25,29 @@ addEventListener('DOMContentLoaded', () => {
 addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.add-location').forEach( button => {
         button.onclick = function() {
-
-            // show new location form by selecting and moving form element
+            
             const newLocationForm = document.getElementById('new-location-form');
-            newLocationForm.style.marginTop = '10px'
-            newLocationForm.style.marginBottom = '10px'
+            
+            if (button.innerHTML === 'Hide') {
+                newLocationForm.style.display = 'none';
+                addLocationStatus = false;
+                addLocationDay = undefined;
+                button.innerHTML = 'Add Location'
+            }
+            else {
+                // show new location form by selecting and moving form element
+                button.innerHTML = 'Hide'
+                newLocationForm.style.marginTop = '10px';
+                newLocationForm.style.marginBottom = '10px';
 
-            const parent = button.parentElement;
-            parent.prepend(newLocationForm);
-            newLocationForm.style.display = 'flex';
+                const parent = button.parentElement;
+                parent.prepend(newLocationForm);
+                newLocationForm.style.display = 'flex';
 
-            // activate optional feature of onMapClick function
-            addLocationStatus = true;
-            addLocationDay = button.dataset.id;
+                // activate optional feature of onMapClick function
+                addLocationStatus = true;
+                addLocationDay = button.dataset.id;
+            }
         }
     })
     
@@ -102,10 +112,10 @@ function loadMarkers() {
     markersData.forEach( day => {
         let locations = day.locations;
         locations.forEach( location => {
-            console.log(location.fields.lat);
+            
             let marker = L.marker([location.fields.lat, location.fields.lng]).addTo(map);
-            marker.bindPopup('test');
-            marker.onclick = marker.openPopup();
+            marker.bindPopup(location.fields.name);
+           
         })
     })
 
