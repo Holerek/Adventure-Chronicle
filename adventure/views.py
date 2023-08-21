@@ -2,6 +2,7 @@ import json
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -52,11 +53,27 @@ def adventure(request, id, message=None):
     if request.user == Adventure.objects.get(pk = id).author: 
         #load all days for requested adventure
         days = Day.objects.filter(adventure = id).order_by("date")
+        
+        
         days_and_locations = []
-        # add locations to days
-        for i in range(len(days)):
-            locations = Location.objects.filter(day=days[i])
-            days_and_locations.append([days[i], locations])
+        
+        # add locations to days 
+        if days:
+            for i in range(0, len(days)):
+                locations = Location.objects.filter(day=days[i])
+                days_and_locations.append((days[i], locations))
+        
+        # convert days and locations query sets to json list
+        json_days = json.loads(serializers.serialize('json', days))
+
+        if days:
+            for i in range(len(days)):
+                locations = Location.objects.filter(day=days[i])
+                json_locations = json.loads(serializers.serialize('json', locations))
+                json_days[i]['locations'] = json_locations
+
+
+
 
         return render(request, 'adventure/adventure.html',{
             'id': id,
@@ -65,6 +82,7 @@ def adventure(request, id, message=None):
             'edit_day': EditDayForm(),
             'new_location': NewLocationForm(),
             'message': message,
+            'markers_data': json_days,
         })
     
     return render(request, 'adventure/layout.html', {

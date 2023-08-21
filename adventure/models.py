@@ -24,4 +24,4 @@ class Location(models.Model):
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=5000)
     lat = models.FloatField()
-    lon = models.FloatField()
+    lng = models.FloatField()

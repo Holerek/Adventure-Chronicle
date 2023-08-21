@@ -6,7 +6,8 @@
 <script src="{% static 'adventure/util.js' %}" type="module"></script>
 <script src="{% static 'adventure/adventure.js' %}" type="module"></script>
 
-<!-- {{ id|json_script:"markers-data"}} -->
+{{ markers_data|json_script:"markers-data"}}
+
 {% endblock %}
 
 

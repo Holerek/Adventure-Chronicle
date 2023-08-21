@@ -5,7 +5,6 @@ var addLocationStatus = false;
 var addLocationDay = undefined;
 
 
-
 // initialize the map
 var map = L.map('map').setView([51.112, 17.036], 13);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -16,6 +15,8 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 addEventListener('DOMContentLoaded', () => {
     document.getElementById('new-location-form').onsubmit = addLocation;
+    map.on('click', onMapClick);
+    loadMarkers();
 })
 
 
@@ -42,7 +43,6 @@ addEventListener('DOMContentLoaded', function() {
     
 })
 
-// headers:{'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')},
 
 function addLocation() {
     fetch('/location', {
@@ -96,8 +96,19 @@ function onMapClick(e) {
 
 }
 
-const value = JSON.parse(document.getElementById('markers-data').textContent);
-console.log(value)
+
+function loadMarkers() {
+    const markersData = JSON.parse(document.getElementById('markers-data').textContent);
+    markersData.forEach( day => {
+        let locations = day.locations;
+        locations.forEach( location => {
+            console.log(location.fields.lat);
+            let marker = L.marker([location.fields.lat, location.fields.lng]).addTo(map);
+            marker.bindPopup('test');
+            marker.onclick = marker.openPopup();
+        })
+    })
+
+}
 
 
-map.on('click', onMapClick);

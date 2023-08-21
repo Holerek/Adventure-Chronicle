@@ -8,10 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById("edit-day-cancel").onclick = hidePopup;
     
     // activate show more arrows
-    showMore()
-    loadMarkers()
+    showMore();
 
-
+    
     const divs = document.querySelectorAll('.adv-item');
     
     divs.forEach(div => {
