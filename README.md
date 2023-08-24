@@ -13,6 +13,8 @@ Web application, written in django framework for keeping track of our adventures
 * shearing adventures with other users
 * testing - unit testing for models 
 * testing - client site (selenium)
+* display on mobile devices
+* styling
 
 ## How to run
 

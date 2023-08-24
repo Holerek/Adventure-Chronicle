@@ -213,7 +213,7 @@ def location(request):
                 name = data['name'],
                 description = data['description'],
                 lat = data['lat'],
-                lon = data['lng']
+                lng = data['lng']
             )
             new_location.save()
             
