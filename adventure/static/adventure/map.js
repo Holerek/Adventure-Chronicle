@@ -2,7 +2,7 @@ import { getCookie } from "./util.js";
 
 // variable to control state or behavior of functions
 var addLocationStatus = false;
-var addLocationDay = undefined;
+// var addLocationDay = undefined;
 
 
 // initialize the map
@@ -27,11 +27,11 @@ addEventListener('DOMContentLoaded', function() {
         button.onclick = function() {
             
             const newLocationForm = document.getElementById('new-location-form');
-            
+            const addLocationDay = document.getElementById('id_new_location_day');
             if (button.innerHTML === 'Hide') {
                 newLocationForm.style.display = 'none';
                 addLocationStatus = false;
-                addLocationDay = undefined;
+                addLocationDay.value = undefined;
                 button.innerHTML = 'Add Location'
             }
             else {
@@ -46,7 +46,7 @@ addEventListener('DOMContentLoaded', function() {
 
                 // activate optional feature of onMapClick function
                 addLocationStatus = true;
-                addLocationDay = button.dataset.id;
+                addLocationDay.value = button.dataset.id;
             }
         }
     })
@@ -54,20 +54,40 @@ addEventListener('DOMContentLoaded', function() {
 })
 
 
+// function addLocation() {
+//     fetch('/location', {
+//         method: 'POST',
+//         headers:{'X-CSRFToken': getCookie('csrftoken')},
+//         mode: 'same-origin',
+//         body: JSON.stringify({
+//             day_id: addLocationDay,
+//             name: document.getElementById('id_new_location_name').value,
+//             description: document.getElementById('id_new_location_description').value,
+//             lat: document.getElementById('id_new_location_lat').value,
+//             lng: document.getElementById('id_new_location_lng').value,
+//         })
+//     })
+//     // .then( response => console.log(response.json()))
+
+//     return false
+// }
+
+
 function addLocation() {
+    const form = document.getElementById('new-location-form')
+    const imageField = document.getElementById('id_new_location_img')
+    
+    const formData = new FormData(form)
+    // formData.append('day_id', 1);
+    formData.append('file', imageField.files[0]);
+
     fetch('/location', {
         method: 'POST',
-        headers:{'X-CSRFToken': getCookie('csrftoken')},
-        mode: 'same-origin',
-        body: JSON.stringify({
-            day_id: addLocationDay,
-            name: document.getElementById('id_new_location_name').value,
-            description: document.getElementById('id_new_location_description').value,
-            lat: document.getElementById('id_new_location_lat').value,
-            lng: document.getElementById('id_new_location_lng').value,
-        })
+        mode: "same-origin",
+        body: formData,
     })
-    // .then( response => console.log(response.json()))
+    .then( response => response.json())
+    .then( res => alert(res.message))
 
     return false
 }
@@ -114,11 +134,35 @@ function loadMarkers() {
         locations.forEach( location => {
             
             let marker = L.marker([location.fields.lat, location.fields.lng]).addTo(map);
-            marker.bindPopup(location.fields.name);
+            var popupContent = createPopupContent(location);
+            marker.bindPopup(popupContent);
+            
+            // marker.bindPopup(location.fields.name);
            
         })
     })
+}
 
+function createPopupContent({fields: {name, description}}) {
+    // console.log(`location: ${name}, description: ${description}`)
+    // create elements of popup content
+    const popupContent = document.createElement('div')
+    const popupName = document.createElement('strong')
+    const popupDescription = document.createElement('span')
+    
+    // fill elements with data
+    popupName.innerHTML = name
+    popupDescription.innerHTML = description
+
+    // add classes 
+    popupContent.classList.add('location-item')
+    popupContent.classList.add('location')
+
+    // bind all elements 
+    popupContent.appendChild(popupName)
+    popupContent.appendChild(popupDescription)
+    
+    return popupContent
 }
 
 

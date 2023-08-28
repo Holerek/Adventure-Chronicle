@@ -163,13 +163,12 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
 }
 
 .location-list {
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
     padding-top: 10px; 
-    display: none;
 }
 
 .location-item{
@@ -214,8 +213,12 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
 }
 
 .show-more {
-    padding-top: 10px;
-    max-height: 15px;
+    width: 20px;
+    margin: auto;
     cursor: pointer;
 }
 
+
+.arrow-up {
+    rotate: 180deg;
+}

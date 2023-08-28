@@ -99,17 +99,22 @@ function showMore() {
     const showMoreArrows = document.querySelectorAll('.show-more');
 
     showMoreArrows.forEach( arrow => {
-        arrow.onclick = function() {
-            const parent = arrow.parentElement;
-            const parentChildren = parent.children;
+
+        const parent = arrow.parentElement;
+        const parentChildren = parent.children;
             
-            const locationList = parentChildren[4];
+        const locationList = parentChildren[4];
+        locationList.style.display = "none";
+
+        arrow.onclick = function() {
 
             if (locationList.style.display === "none") {
                 locationList.style.display = "flex";
+                arrow.classList.add('arrow-up')
             }
             else {
                 locationList.style.display = "none";
+                arrow.classList.remove('arrow-up')
             }
         }
     })
