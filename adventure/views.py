@@ -27,7 +27,8 @@ class NewLocationForm(forms.Form):
     new_location_description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={'placeholder': 'Description',}) , strip=True,)
     new_location_lat = forms.FloatField(widget=forms.NumberInput(attrs={'type': 'hidden',}))
     new_location_lng = forms.FloatField(widget=forms.NumberInput(attrs={'type': 'hidden',}))
-    # img = forms.ImageField()
+    new_location_day = forms.IntegerField(widget=forms.NumberInput(attrs={'type': 'hidden',}))
+    new_location_img = forms.ImageField()
 
 
 def index(request):
@@ -198,32 +199,62 @@ def delete_day(request):
     return redirect(reverse('index'))
 
 
+# @login_required
+# def location(request):
+    
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         day = Day.objects.get(pk=data['day_id'])
+#         print(request.FILE)
+#         # validate if user is and author of day
+#         if request.user == day.adventure.author:
+#             new_location = Location(
+#                 day = day,
+#                 adventure = day.adventure,
+#                 name = data['name'],
+#                 description = data['description'],
+#                 lat = data['lat'],
+#                 lng = data['lng']
+#             )
+#             new_location.save()
+            
+#             return JsonResponse({
+#                 'message': 'Location added'
+#             })
+
+#     return redirect(reverse('index'))
+
+
 @login_required
 def location(request):
     
     if request.method == 'POST':
-        data = json.loads(request.body)
-        day = Day.objects.get(pk=data['day_id'])
+        form = (NewLocationForm(request.POST, request.FILES))
+
+        if form.is_valid():
+            data = form.cleaned_data
+            print(data)
+
+        day = Day.objects.get(pk=data['new_location_day'])
         
         # validate if user is and author of day
         if request.user == day.adventure.author:
             new_location = Location(
                 day = day,
                 adventure = day.adventure,
-                name = data['name'],
-                description = data['description'],
-                lat = data['lat'],
-                lng = data['lng']
+                name = data['new_location_name'],
+                description = data['new_location_description'],
+                lat = data['new_location_lat'],
+                lng = data['new_location_lng'],
+                photo = data['new_location_img']
             )
             new_location.save()
             
-            return JsonResponse({
-                'message': 'Location added'
-            })
+        return JsonResponse({
+            'message': 'Location added'
+        })
 
     return redirect(reverse('index'))
-
-
 
 
 

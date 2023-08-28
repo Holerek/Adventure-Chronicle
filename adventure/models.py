@@ -23,5 +23,6 @@ class Location(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=5000)
+    photo = models.ImageField(null=True, blank=True, upload_to='images/')
     lat = models.FloatField()
     lng = models.FloatField()

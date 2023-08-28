@@ -44,7 +44,7 @@
         <input class="input-button" id="submit-new-day" type="submit" value="Submit"></submit>
     </form>
 
-    <form id="new-location-form" class="adv-form">
+    <form id="new-location-form" class="adv-form" enctype="multipart/form-data" method="POST">
         {% csrf_token %}
         {{ new_location }}
         <input class="input-button" id="submit-new-location" type="submit" value="Submit"></submit>
@@ -55,7 +55,7 @@
             <h3>{{ day.date|date:"Y-m-d" }}</h3>
             <span>{{ day.description }}</span>
             <button type="button" class="add" data-id="{{day.id}}" >Edit</button>
-            <img class="show-more" src="{% static 'adventure/img/delete.svg' %}" alt="show location arrow">
+            <img class="show-more arrow-down" src="{% static 'adventure/img/arrow-down.svg' %}" alt="show location arrow">
         
         
             
@@ -64,7 +64,7 @@
                 {% for location in locations %}
                     <div class="location-item location">
                         <strong>{{location.name}}</strong>
-                        <img src="https://media.istockphoto.com/id/1198461597/pl/zdj%C4%99cie/dubrownik.jpg?s=612x612&w=0&k=20&c=jcN1KEbmZnkRLDJ71yhjqo8TmQ7B6GKmEw5nOWfCT9Q=" alt="No image yet">
+                        <img src="{{location.photo.url}}" alt="No image yet">
                         <span>{{location.description}}</span>
                     </div>
                 {% empty %}

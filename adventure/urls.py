@@ -15,4 +15,5 @@ urlpatterns = [
     path('delete-day', views.delete_day, name='delete day'),
     path('create-adventure', views.create_adventure, name='create adventure'),
     path('location', views.location, name='location'),
+    # path('location/form', views.location_form, name='location form'),
 ]
