@@ -7,30 +7,10 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from django import forms
 from .models import Adventure, Day, Location
+from .forms import NewAdventureForm, NewDayForm, EditDayForm, NewLocationForm, EditLocationForm
 
 # Create your views here
-class NewAdventureForm(forms.Form):
-    title = forms.CharField(max_length=128)
-
-class NewDayForm(forms.Form):
-    date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'YYYY-MM-DD', 'maxlength': '10'},))
-    description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={ 'autofocus': 'true', 'placeholder': 'Describe your day :)'}) , strip=True,)
-
-class EditDayForm(forms.Form):
-    edit_day_date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'YYYY-MM-DD', 'maxlength': '10'},))
-    edit_day_description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={ 'autofocus': 'true', 'placeholder': 'YYYY-MM-DD'}) , strip=True,)
-
-class NewLocationForm(forms.Form):
-    new_location_name = forms.CharField(max_length=5000, strip=True, widget=forms.TextInput(attrs={'placeholder': 'Title', 'autofocus': 'true'}))
-    new_location_description = forms.CharField(max_length=5000, widget=forms.Textarea(attrs={'placeholder': 'Description',}) , strip=True,)
-    new_location_lat = forms.FloatField(widget=forms.NumberInput(attrs={'type': 'hidden',}))
-    new_location_lng = forms.FloatField(widget=forms.NumberInput(attrs={'type': 'hidden',}))
-    new_location_day = forms.IntegerField(widget=forms.NumberInput(attrs={'type': 'hidden',}))
-    new_location_img = forms.ImageField(required=False)
-
-
 def index(request):
     
     adventures = Adventure.objects.filter(author = request.user.id)
@@ -82,6 +62,7 @@ def adventure(request, id, message=None):
             'new_day': NewDayForm(),
             'edit_day': EditDayForm(),
             'new_location': NewLocationForm(),
+            'edit_location': EditLocationForm(),
             'message': message,
             'markers_data': json_days,
         })
@@ -199,32 +180,6 @@ def delete_day(request):
     return redirect(reverse('index'))
 
 
-# @login_required
-# def location(request):
-    
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         day = Day.objects.get(pk=data['day_id'])
-#         print(request.FILE)
-#         # validate if user is and author of day
-#         if request.user == day.adventure.author:
-#             new_location = Location(
-#                 day = day,
-#                 adventure = day.adventure,
-#                 name = data['name'],
-#                 description = data['description'],
-#                 lat = data['lat'],
-#                 lng = data['lng']
-#             )
-#             new_location.save()
-            
-#             return JsonResponse({
-#                 'message': 'Location added'
-#             })
-
-#     return redirect(reverse('index'))
-
-
 @login_required
 def location(request):
     
@@ -233,7 +188,6 @@ def location(request):
 
         if form.is_valid():
             data = form.cleaned_data
-            print(data)
 
         day = Day.objects.get(pk=data['new_location_day'])
         
@@ -257,26 +211,48 @@ def location(request):
     return redirect(reverse('index'))
 
 
+@login_required
+def edit_location(request):
+    
+    if request.method == 'POST':
+        form = (EditLocationForm(request.POST, request.FILES))
+
+        if form.is_valid():
+            data = form.cleaned_data
+            location = Location.objects.get(pk=data['edit_location_id'])
+            
+            # validate if user is and author of day
+            if request.user == location.adventure.author:
+                
+                location.name = data['edit_location_name']
+                location.description = data['edit_location_description']
+                location.photo = data['edit_location_img']
+                location.save()
+                
+            return JsonResponse({
+                'message': 'Location has been modified'
+            })
+
+    return redirect(reverse('index'))
 
 
+@login_required
+def delete_location(request):
 
+    if request.method == 'POST':
+        data = json.loads(request.body)
 
+        location = Location.objects.get(pk=data['location_id'])
 
+        # validate if user is an author of location
+        if location.adventure.author == request.user:
+            location.delete()
 
+            return JsonResponse({
+                'message': 'location has been removed'
+            })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return redirect(reverse('index'))
 
 
 

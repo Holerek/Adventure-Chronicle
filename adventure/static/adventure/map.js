@@ -1,4 +1,5 @@
 import { getCookie } from "./util.js";
+import { hidePopup } from "./adventure.js";
 
 // variable to control state or behavior of functions
 var addLocationStatus = false;
@@ -15,6 +16,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 addEventListener('DOMContentLoaded', () => {
     document.getElementById('new-location-form').onsubmit = addLocation;
+    // document.getElementById('edit-location-form').onsubmit = editLocation;
     map.on('click', onMapClick);
     loadMarkers();
 })
@@ -76,8 +78,32 @@ function addLocation() {
     .then( response => response.json())
     .then( res => alert(res.message))
 
+    
+
     return false
 }
+
+
+// function editLocation() {
+//     const form = document.getElementById('edit-location-form')
+//     // const imageField = document.getElementById('id_new_location_img')
+    
+//     const formData = new FormData(form)
+    
+//     // formData.append('file', imageField.files[0]);
+
+//     fetch('/edit-location', {
+//         method: 'POST',
+//         mode: "same-origin",
+//         body: formData,
+//     })
+//     .then( response => response.json())
+//     .then( res => console.log(res.message))
+
+//     hidePopup()
+
+//     return false
+// }
 
 
 var mainMarker = null;
@@ -100,7 +126,7 @@ function onMapClick(e) {
         mainMarker.bindPopup("normal popup").openPopup();
     }
     else if (addLocationStatus === true) {
-        mainMarker.bindPopup("add location popup").openPopup();
+        mainMarker.bindPopup("New Location").openPopup();
         document.getElementById('id_new_location_lat').value = lat;
         document.getElementById('id_new_location_lng').value = lng;
     }

@@ -13,7 +13,7 @@
 
 
 {% block popup %}
-    <div class="popup">
+    <div class="popup" id="edit-day-div">
         <form class="adv-form" id="edit-form" action="{% url 'edit day' %}" method="post">
             <div class="line">
                 <h2>Edit Day </h2>
@@ -26,6 +26,18 @@
             <input type="hidden" name="adv_id" value="{{ id }}"></submit>
             <input class="input-button" type="submit" value="Save changes"></submit>
         </form>
+    </div>
+    <div class="popup" id="edit-location-div">
+            <form class="adv-form" id="edit-location-form" action="{% url 'edit location' %}" method="post">
+                <div class="line">
+                    <h2>Edit Location </h2>
+                    <button type="button" id="edit-location-cancel" name="edit-location-cancel">Cancel</button>
+                    <button type="button" id="edit-location-delete" name="edit-location-delete">Delete</button>
+                </div>   
+                {% csrf_token%}
+                {{ edit_location }}
+                <input class="input-button" type="submit" value="Save changes"></submit>
+            </form>
     </div>
 {% endblock %}
 
@@ -70,7 +82,7 @@
                         <span><em>no image yet</em></span>
                         {% endif %}
                         <span>{{location.description}}</span>
-                        <button type="button" class="add" data-id="{{day.id}}" >Edit location</button>
+                        <button type="button" class="add" data-id="{{location.id}}" >Edit location</button>
                     </div>
                 {% empty %}
                     <div class="location-list">
