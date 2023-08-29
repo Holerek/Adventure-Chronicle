@@ -64,7 +64,11 @@
                 {% for location in locations %}
                     <div class="location-item location">
                         <strong>{{location.name}}</strong>
-                        <img src="{{location.photo.url}}" alt="No image yet">
+                        {% if location.photo %}
+                            <img src="{{location.photo.url}}" alt="location image">
+                        {% else %}
+                            <span><em>no image yet</em></span>
+                        {% endif %}
                         <span>{{location.description}}</span>
                     </div>
                 {% empty %}

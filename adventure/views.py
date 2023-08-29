@@ -28,7 +28,7 @@ class NewLocationForm(forms.Form):
     new_location_lat = forms.FloatField(widget=forms.NumberInput(attrs={'type': 'hidden',}))
     new_location_lng = forms.FloatField(widget=forms.NumberInput(attrs={'type': 'hidden',}))
     new_location_day = forms.IntegerField(widget=forms.NumberInput(attrs={'type': 'hidden',}))
-    new_location_img = forms.ImageField()
+    new_location_img = forms.ImageField(required=False)
 
 
 def index(request):
@@ -71,8 +71,8 @@ def adventure(request, id, message=None):
             for i in range(len(days)):
                 locations = Location.objects.filter(day=days[i])
                 json_locations = json.loads(serializers.serialize('json', locations))
+                
                 json_days[i]['locations'] = json_locations
-
 
 
 

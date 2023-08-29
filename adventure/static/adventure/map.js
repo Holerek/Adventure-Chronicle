@@ -143,16 +143,18 @@ function loadMarkers() {
     })
 }
 
-function createPopupContent({fields: {name, description}}) {
+function createPopupContent({fields: {name, description, photo}}) {
     // console.log(`location: ${name}, description: ${description}`)
     // create elements of popup content
     const popupContent = document.createElement('div')
     const popupName = document.createElement('strong')
     const popupDescription = document.createElement('span')
-    
+    const popupImg = document.createElement('img')
+    console.log(photo)
     // fill elements with data
     popupName.innerHTML = name
     popupDescription.innerHTML = description
+    popupImg.src = `/media/${photo}`
 
     // add classes 
     popupContent.classList.add('location-item')
@@ -160,6 +162,7 @@ function createPopupContent({fields: {name, description}}) {
 
     // bind all elements 
     popupContent.appendChild(popupName)
+    popupContent.appendChild(popupImg)
     popupContent.appendChild(popupDescription)
     
     return popupContent

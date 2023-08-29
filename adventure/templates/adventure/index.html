@@ -27,7 +27,7 @@
         <button class="add" id="newAdventureButton">New Adventure</button>
     </div>
     
-    <div id="newAdventure" class="">
+    <div id="newAdventure" style="display: none;">
         <form class="adv-form" action="{% url 'create adventure' %}" method="post">
             {% csrf_token %}
             {{ form }}

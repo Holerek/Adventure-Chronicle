@@ -5,10 +5,10 @@ Web application, written in django framework for keeping track of our adventures
 
 ## Requirements
 * [django](https://www.djangoproject.com/) - core framework.
+* [pillow](https://pypi.org/project/Pillow/) - uploading images
 
 ## To Do:
 * management of map markers/popups (additional behaviors)
-* file upload (images of locations)
 * upload and display routes (form gpx files)
 * shearing adventures with other users
 * testing - unit testing for models 
