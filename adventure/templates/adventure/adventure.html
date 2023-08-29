@@ -54,7 +54,7 @@
         <div class="adv-item">
             <h3>{{ day.date|date:"Y-m-d" }}</h3>
             <span>{{ day.description }}</span>
-            <button type="button" class="add" data-id="{{day.id}}" >Edit</button>
+            <button type="button" class="add" data-id="{{day.id}}" >Edit day</button>
             <img class="show-more arrow-down" src="{% static 'adventure/img/arrow-down.svg' %}" alt="show location arrow">
         
         
@@ -65,11 +65,12 @@
                     <div class="location-item location">
                         <strong>{{location.name}}</strong>
                         {% if location.photo %}
-                            <img src="{{location.photo.url}}" alt="location image">
+                        <img src="{{location.photo.url}}" alt="location image">
                         {% else %}
-                            <span><em>no image yet</em></span>
+                        <span><em>no image yet</em></span>
                         {% endif %}
                         <span>{{location.description}}</span>
+                        <button type="button" class="add" data-id="{{day.id}}" >Edit location</button>
                     </div>
                 {% empty %}
                     <div class="location-list">

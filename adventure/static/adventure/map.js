@@ -23,9 +23,10 @@ addEventListener('DOMContentLoaded', () => {
 
 // show add location form for each day
 addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.add-location').forEach( button => {
+    const buttons = document.querySelectorAll('.add-location')
+    buttons.forEach( button => {
+        
         button.onclick = function() {
-            
             const newLocationForm = document.getElementById('new-location-form');
             const addLocationDay = document.getElementById('id_new_location_day');
             if (button.innerHTML === 'Hide') {
@@ -35,6 +36,11 @@ addEventListener('DOMContentLoaded', function() {
                 button.innerHTML = 'Add Location'
             }
             else {
+                // reset all add location buttons
+                buttons.forEach( b => {
+                    b.innerHTML = 'Add Location'
+                })
+
                 // show new location form by selecting and moving form element
                 button.innerHTML = 'Hide'
                 newLocationForm.style.marginTop = '10px';
@@ -54,31 +60,12 @@ addEventListener('DOMContentLoaded', function() {
 })
 
 
-// function addLocation() {
-//     fetch('/location', {
-//         method: 'POST',
-//         headers:{'X-CSRFToken': getCookie('csrftoken')},
-//         mode: 'same-origin',
-//         body: JSON.stringify({
-//             day_id: addLocationDay,
-//             name: document.getElementById('id_new_location_name').value,
-//             description: document.getElementById('id_new_location_description').value,
-//             lat: document.getElementById('id_new_location_lat').value,
-//             lng: document.getElementById('id_new_location_lng').value,
-//         })
-//     })
-//     // .then( response => console.log(response.json()))
-
-//     return false
-// }
-
-
 function addLocation() {
     const form = document.getElementById('new-location-form')
     const imageField = document.getElementById('id_new_location_img')
     
     const formData = new FormData(form)
-    // formData.append('day_id', 1);
+    
     formData.append('file', imageField.files[0]);
 
     fetch('/location', {
@@ -91,7 +78,6 @@ function addLocation() {
 
     return false
 }
-
 
 
 var mainMarker = null;
@@ -118,12 +104,6 @@ function onMapClick(e) {
         document.getElementById('id_new_location_lat').value = lat;
         document.getElementById('id_new_location_lng').value = lng;
     }
-    
-    // mainPopup.setContent("test")
-    //     .setLatLng(e.latlng)
-    //     .openOn(map);
-
-
 }
 
 
@@ -144,18 +124,25 @@ function loadMarkers() {
 }
 
 function createPopupContent({fields: {name, description, photo}}) {
-    // console.log(`location: ${name}, description: ${description}`)
     // create elements of popup content
     const popupContent = document.createElement('div')
     const popupName = document.createElement('strong')
     const popupDescription = document.createElement('span')
     const popupImg = document.createElement('img')
-    console.log(photo)
+    
     // fill elements with data
     popupName.innerHTML = name
     popupDescription.innerHTML = description
-    popupImg.src = `/media/${photo}`
-
+    
+    // if there is a photo add path to img tag
+    if (photo) {
+        popupImg.src = `/media/${photo}`
+        popupImg.alt = 'location image'
+    }
+    else {
+        popupImg.alt = 'no image yet'
+    }
+    
     // add classes 
     popupContent.classList.add('location-item')
     popupContent.classList.add('location')
