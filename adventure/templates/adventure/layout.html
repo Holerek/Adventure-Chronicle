@@ -59,7 +59,9 @@
 
             
         </div>
-        <script src="{% static 'adventure/map.js' %}" type="module"></script>
 
+        {% block map-script %}
+        {% endblock %}
+        
     </body>
 </html>

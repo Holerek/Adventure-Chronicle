@@ -8,6 +8,7 @@ Web application, written in django framework for keeping track of our adventures
 * [pillow](https://pypi.org/project/Pillow/) - uploading images
 
 ## To Do:
+* create new location item after submitting new location form. 
 * management of map markers/popups (additional behaviors)
 * upload and display routes (form gpx files)
 * shearing adventures with other users
@@ -20,6 +21,8 @@ Web application, written in django framework for keeping track of our adventures
 
 Install all requirements and in main application folder run command:
 
+        python3 manage.py makemigrations
+        python3 manage.py migrate
         python3 manage.py runserver
 
 ## File Overview

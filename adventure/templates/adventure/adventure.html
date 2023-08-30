@@ -4,10 +4,14 @@
 {% block script %}
 
 <script src="{% static 'adventure/util.js' %}" type="module"></script>
-<script src="{% static 'adventure/adventure.js' %}" type="module"></script>
-
+<!-- <script src="{% static 'adventure/adventure.js' %}" type="module"></script> -->
 {{ markers_data|json_script:"markers-data"}}
 
+
+{% endblock %}
+
+{% block map-script %}
+    <script src="{% static 'adventure/adventure.js' %}" type="module"></script>
 {% endblock %}
 
 

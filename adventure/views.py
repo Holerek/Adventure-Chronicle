@@ -227,7 +227,11 @@ def edit_location(request):
                 
                 location.name = data['edit_location_name']
                 location.description = data['edit_location_description']
-                location.photo = data['edit_location_img']
+                
+                # prevent deleting existing img if no image was send 
+                if data['edit_location_img']:
+                    location.photo = data['edit_location_img']
+                
                 location.save()
                 
             return JsonResponse({
