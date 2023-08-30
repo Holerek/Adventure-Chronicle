@@ -49,7 +49,8 @@ addEventListener('DOMContentLoaded', function() {
                 newLocationForm.style.marginBottom = '10px';
 
                 const parent = button.parentElement;
-                parent.prepend(newLocationForm);
+                parent.insertBefore(newLocationForm, parent.children[1])
+                // parent.prepend(newLocationForm);
                 newLocationForm.style.display = 'flex';
 
                 // activate optional feature of onMapClick function

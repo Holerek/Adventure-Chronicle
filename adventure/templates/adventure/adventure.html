@@ -17,26 +17,26 @@
         <form class="adv-form" id="edit-form" action="{% url 'edit day' %}" method="post">
             <div class="line">
                 <h2>Edit Day </h2>
-                <button type="button" id="edit-day-cancel" name="edit-day-cancel">Cancel</button>
-                <button type="button" id="edit-day-delete" name="edit-day-delete">Delete</button>
+                <button type="button" id="edit-day-cancel" name="edit-day-cancel" class="cancel">Cancel</button>
+                <button type="button" id="edit-day-delete" name="edit-day-delete" class="delete">Delete</button>
             </div>    
             {% csrf_token%}
             {{ edit_day }}
             <input type="hidden" id="day_id" name="day_id" value=""></submit>
             <input type="hidden" name="adv_id" value="{{ id }}"></submit>
-            <input class="input-button" type="submit" value="Save changes"></submit>
+            <input class="input-button save" type="submit" value="Save changes"></submit>
         </form>
     </div>
     <div class="popup" id="edit-location-div">
             <form class="adv-form" id="edit-location-form" action="{% url 'edit location' %}" method="post">
                 <div class="line">
                     <h2>Edit Location </h2>
-                    <button type="button" id="edit-location-cancel" name="edit-location-cancel">Cancel</button>
-                    <button type="button" id="edit-location-delete" name="edit-location-delete">Delete</button>
+                    <button type="button" id="edit-location-cancel" name="edit-location-cancel" class="cancel">Cancel</button>
+                    <button type="button" id="edit-location-delete" name="edit-location-delete" class="delete">Delete</button>
                 </div>   
                 {% csrf_token%}
                 {{ edit_location }}
-                <input class="input-button" type="submit" value="Save changes"></submit>
+                <input class="input-button save" type="submit" value="Save changes"></submit>
             </form>
     </div>
 {% endblock %}
@@ -44,8 +44,11 @@
 
 
 {% block body %}
+    <div>
+        <h1 class="title">{{adventure}}</h1>
+    </div>
     <div class="add-day">
-        <button type="button" id="show-add-day-form">Add Day</button>
+        <button class="add" type="button" id="show-add-day-form">Add Day</button>
     </div>
 
     <form class="adv-form" id="add-day-form" action="{% url 'day' %}" method="post">
@@ -53,20 +56,20 @@
         {% csrf_token%}
         {{ new_day }}
         <input type="hidden" name="adv_id" value="{{ id }}"></submit>
-        <input class="input-button" id="submit-new-day" type="submit" value="Submit"></submit>
+        <input class="input-button save" id="submit-new-day" type="submit" value="Submit"></submit>
     </form>
 
     <form id="new-location-form" class="adv-form" enctype="multipart/form-data" method="POST">
         {% csrf_token %}
         {{ new_location }}
-        <input class="input-button" id="submit-new-location" type="submit" value="Submit"></submit>
+        <input class="input-button save" id="submit-new-location" type="submit" value="Submit"></submit>
     </form>
 
     {% for day, locations in days %}
         <div class="adv-item">
             <h3>{{ day.date|date:"Y-m-d" }}</h3>
             <span>{{ day.description }}</span>
-            <button type="button" class="add" data-id="{{day.id}}" >Edit day</button>
+            <button type="button" class="edit" data-id="{{day.id}}" >Edit day</button>
             <img class="show-more arrow-down" src="{% static 'adventure/img/arrow-down.svg' %}" alt="show location arrow">
         
         
@@ -79,10 +82,10 @@
                         {% if location.photo %}
                         <img src="{{location.photo.url}}" alt="location image">
                         {% else %}
-                        <span><em>no image yet</em></span>
+                        <em>no image yet</em>
                         {% endif %}
                         <span>{{location.description}}</span>
-                        <button type="button" class="add" data-id="{{location.id}}" >Edit location</button>
+                        <button type="button" class="edit" data-id="{{location.id}}" >Edit location</button>
                     </div>
                 {% empty %}
                     <div class="location-list">

@@ -29,9 +29,9 @@ def adventure(request, id, message=None):
     except:
         pass
     
-
+    adventure = Adventure.objects.get(pk = id)
     # check if user is author
-    if request.user == Adventure.objects.get(pk = id).author: 
+    if request.user == adventure.author: 
         #load all days for requested adventure
         days = Day.objects.filter(adventure = id).order_by("date")
         
@@ -59,6 +59,7 @@ def adventure(request, id, message=None):
         return render(request, 'adventure/adventure.html',{
             'id': id,
             'days': days_and_locations,
+            'adventure': adventure.title,
             'new_day': NewDayForm(),
             'edit_day': EditDayForm(),
             'new_location': NewLocationForm(),
