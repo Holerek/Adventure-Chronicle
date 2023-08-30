@@ -206,7 +206,7 @@ def location(request):
             new_location.save()
             
         return JsonResponse({
-            'message': 'Location added'
+            'message': 'Location added. Please reload the page (tmp solution)'
         })
 
     return redirect(reverse('index'))

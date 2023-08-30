@@ -323,6 +323,7 @@ function addLocation() {
     .then( response => response.json())
     .then( res => alert(res.message))
 
+    hidePopup()
 
     return false
 }
