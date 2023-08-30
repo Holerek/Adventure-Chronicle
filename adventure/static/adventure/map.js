@@ -171,13 +171,13 @@ function createPopupContent({fields: {name, description, photo}}) {
     }
     
     // add classes 
-    popupContent.classList.add('location-item')
-    popupContent.classList.add('location')
+    popupContent.classList.add('location-popup')
+    // popupContent.classList.add('location')
 
     // bind all elements 
     popupContent.appendChild(popupName)
     popupContent.appendChild(popupImg)
-    popupContent.appendChild(popupDescription)
+    // popupContent.appendChild(popupDescription)
     
     return popupContent
 }

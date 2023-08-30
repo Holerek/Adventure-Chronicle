@@ -243,7 +243,7 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
     background-color: white;
 }
 
-.location-item > strong {
+.location-item > strong, .location-popup > strong {
     text-align: center;
     border-bottom: 1px solid gray;
     padding-bottom: 5px;
@@ -254,17 +254,21 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
     padding-top: 5px;
 }
 
-/* .location {
-    display: flex;
+.location-popup{
+    font-size: 1rem;
+    display: flex; 
     flex-direction: column;
+}
+
+
+.location-popup > img {
     margin-top: 10px;
-} */
+    max-width: 50vw;
+}
 
 .location-item > * {
     margin-top: 5px;
-    margin-bottom: 5px;
-
-    
+    margin-bottom: 5px; 
 }
 
 .location > img {
