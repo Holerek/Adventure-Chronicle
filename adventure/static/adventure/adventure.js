@@ -20,14 +20,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-day-form').style.display = 'none'
     document.getElementById('show-add-day-form').onclick = showAddDayForm
     document.getElementById("edit-day-cancel").onclick = hidePopup
-    document.getElementById("edit-location-cancel").onclick = hidePopup
     document.getElementById("edit-day-delete").onclick = deleteDay
+    document.getElementById("edit-location-cancel").onclick = hidePopup
     document.getElementById("edit-location-delete").onclick = deleteLocation
+    document.getElementById('new-location-form').onsubmit = addLocation
+    map.on('click', onMapClick)
+    
+    //loads markers from server
+    loadMarkers()
     
     // activate arrows for showing and hiding location list
     showMore()
+
+    // add action to all edit location buttons
     activateEditLocationButtons()
     
+
     const divs = document.querySelectorAll('.adv-item')
     
     divs.forEach(div => {
@@ -93,6 +101,7 @@ function activateEditLocationButtons() {
 
 
 function showEditLocationForm(location) {
+    // select html elements
     const popup = document.querySelector("#edit-location-div")
     const form = document.getElementById('edit-location-form')
     
@@ -116,7 +125,7 @@ function showEditLocationForm(location) {
     deactivateBackground(true)
 
     document.getElementById('edit-location-form').onsubmit = () => {
-        saveLocation(location)
+        saveEditedLocation()
         currentName.innerHTML = newName.value
         currentDescription.innerHTML = newDescription.value
         
@@ -124,7 +133,7 @@ function showEditLocationForm(location) {
     }
 }
 
-function saveLocation(location) {
+function saveEditedLocation() {
     const form = document.getElementById('edit-location-form')
     // const imageField = document.getElementById('id_new_location_img')
     
@@ -168,7 +177,7 @@ function deleteLocation() {
 }
 
 
-export function hidePopup() {
+function hidePopup() {
     //hide popup
     document.querySelector("#edit-day-div").style.display = "none"
     document.querySelector("#edit-location-div").style.display = "none"
@@ -258,15 +267,6 @@ function deleteDay() {
 // =============================================================================================
 
 
-addEventListener('DOMContentLoaded', () => {
-    document.getElementById('new-location-form').onsubmit = addLocation
-    // document.getElementById('edit-location-form').onsubmit = editLocation
-    map.on('click', onMapClick)
-    loadMarkers()
-})
-
-
-
 // show add location form for each day
 addEventListener('DOMContentLoaded', function() {
     const buttons = document.querySelectorAll('.add-location')
@@ -312,7 +312,6 @@ function addLocation() {
     const imageField = document.getElementById('id_new_location_img')
     
     const formData = new FormData(form)
-    
     formData.append('file', imageField.files[0])
 
     fetch('/location', {
@@ -321,11 +320,27 @@ function addLocation() {
         body: formData,
     })
     .then( response => response.json())
-    .then( res => alert(res.message))
-
-    hidePopup()
+    .then( res => {
+        hideNewLocationForm(formData.get('new_location_day'))
+        createLocationItem(formData, res.new_location_id)
+        console.log(res.message)
+    })
 
     return false
+}
+
+
+function hideNewLocationForm(dayId) {
+    const newLocationForm = document.getElementById('new-location-form')
+    
+    // hide form
+    newLocationForm.style.display = 'none'
+    
+    // reset input fields
+    newLocationForm.reset()
+
+    // change button innerHTML
+    document.getElementById(`location-list-${dayId}`).children[0].innerHTML = 'Add Location'
 }
 
 
@@ -396,4 +411,65 @@ function createPopupContent({fields: {name, description, photo}}) {
     popupContent.appendChild(popupImg)
     
     return popupContent
+}
+
+
+function createLocationItem(formData, newLocationId) {
+
+    // new location data 
+    const name = formData.get('new_location_name')
+    const description = formData.get('new_location_description')
+    const photo = formData.get('new_location_img')
+    let photoName = photo.name
+
+    // convert photo name
+    photoName = photoName.replaceAll(' ', '_')
+
+    // create new elements
+    const locationDiv = document.createElement('div')
+    const locationName = document.createElement('strong')
+    const LocationDescription = document.createElement('span')
+    const locationEditButton = document.createElement('button')
+    let locationPhoto = undefined
+
+    if (photo.size !== 0) {
+        locationPhoto = document.createElement('img')
+    }
+    else {
+        locationPhoto = document.createElement('em')
+    }
+
+    // append necessary classes
+    locationDiv.classList.add('location-item', 'location')
+    locationEditButton.classList.add('edit')
+
+    // add attributes 
+    locationEditButton.setAttribute('type', 'button')
+    locationEditButton.setAttribute('data-id', `${newLocationId}`)
+    locationPhoto.setAttribute('src', `http://localhost:8000/media/images/${photo.name.replaceAll(' ', '_')}`)
+    locationPhoto.setAttribute('alt', 'location image')
+
+    // fill elements with new content
+    locationName.innerHTML = name
+    LocationDescription.innerHTML = description
+    locationEditButton.innerHTML = 'Edit location'
+
+    // combine all elements to one 
+    locationDiv.append(locationName, locationPhoto, LocationDescription, locationEditButton)
+
+    // select day and append new location div
+    const dayId = formData.get('new_location_day')
+    const dayDiv = document.getElementById(`location-list-${dayId}`)
+    dayDiv.append(locationDiv)
+
+    // add action to new edit location button 
+    locationEditButton.onclick = function() {
+        
+        // update location id in form 
+        document.getElementById('id_edit_location_id').value = this.dataset.id
+        
+        showEditLocationForm(locationDiv)
+    }
+    
+    return 0
 }

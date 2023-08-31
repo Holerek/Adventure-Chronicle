@@ -70,7 +70,7 @@
     </form>
 
     {% for day, locations in days %}
-        <div class="adv-item">
+        <div class="adv-item" id="day-{{day.id}}">
             <h3>{{ day.date|date:"Y-m-d" }}</h3>
             <span>{{ day.description }}</span>
             <button type="button" class="edit" data-id="{{day.id}}" >Edit day</button>
@@ -78,22 +78,18 @@
         
         
             
-            <div class="location-list">
+            <div class="location-list" id="location-list-{{day.id}}">
                 <button type="button" class="add-location" data-id="{{day.id}}" >Add Location</button>
                 {% for location in locations %}
                     <div class="location-item location">
                         <strong>{{location.name}}</strong>
                         {% if location.photo %}
-                        <img src="{{location.photo.url}}" alt="location image">
+                        <img src="{{location.photo.url}}" alt="location image" >
                         {% else %}
                         <em>no image yet</em>
                         {% endif %}
                         <span>{{location.description}}</span>
                         <button type="button" class="edit" data-id="{{location.id}}" >Edit location</button>
-                    </div>
-                {% empty %}
-                    <div class="location-list">
-                        <span>No location yet.</span>
                     </div>
                 {% endfor %}
             </div>

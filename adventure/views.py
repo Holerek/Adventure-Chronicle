@@ -182,7 +182,7 @@ def delete_day(request):
 
 
 @login_required
-def location(request):
+def new_location(request):
     
     if request.method == 'POST':
         form = (NewLocationForm(request.POST, request.FILES))
@@ -204,9 +204,12 @@ def location(request):
                 photo = data['new_location_img']
             )
             new_location.save()
+            print(new_location.id)
             
         return JsonResponse({
-            'message': 'Location added. Please reload the page (tmp solution)'
+            'message': 'Location added.',
+            'new_location_id': f'{new_location.id}'
+
         })
 
     return redirect(reverse('index'))
