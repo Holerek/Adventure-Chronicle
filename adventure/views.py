@@ -1,4 +1,5 @@
 import json
+import os
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,9 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from .models import Adventure, Day, Location
 from .forms import NewAdventureForm, NewDayForm, EditDayForm, NewLocationForm, EditLocationForm
+
+# from ..chronicle.settings import MEDIA_ROOT
+from django.conf import settings
 
 # Create your views here
 def index(request):
@@ -248,10 +252,21 @@ def edit_location(request):
 def delete_location(request):
 
     if request.method == 'POST':
+        
+        # load location data 
         data = json.loads(request.body)
 
         location = Location.objects.get(pk=data['location_id'])
 
+        # generate location of image file
+        image_path = f'{settings.MEDIA_ROOT}/{location.photo}'
+
+        # if there is an image then delete it
+        try:
+            os.remove(image_path)
+        except: 
+            pass
+        
         # validate if user is an author of location
         if location.adventure.author == request.user:
             location.delete()
