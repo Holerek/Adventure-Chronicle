@@ -1,5 +1,13 @@
 # Adventure Chronicle
 #### Video Demo: TODO
+### Presentation
+
+![Adding new location](presentation1.png)
+
+![Overview](presentation2.png)
+
+![editing location](presentation3.png)
+
 ## Description:
 Web application, written in django framework for keeping track of our adventures/journeys. Every adventure contains days and each day can contains many locations/routes. All locations can be displayed on map through usage of leaflet library.
 
