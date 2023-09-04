@@ -125,7 +125,7 @@ function showEditLocationForm(location) {
     deactivateBackground(true)
 
     document.getElementById('edit-location-form').onsubmit = () => {
-        saveEditedLocation()
+        saveEditedLocation(location)
         currentName.innerHTML = newName.value
         currentDescription.innerHTML = newDescription.value
         
@@ -133,13 +133,9 @@ function showEditLocationForm(location) {
     }
 }
 
-function saveEditedLocation() {
+function saveEditedLocation(location) {
     const form = document.getElementById('edit-location-form')
-    // const imageField = document.getElementById('id_new_location_img')
-    
     const formData = new FormData(form)
-    
-    // formData.append('file', imageField.files[0])
 
     fetch('/edit-location', {
         method: 'POST',
@@ -148,10 +144,49 @@ function saveEditedLocation() {
     })
     .then( response => response.json())
     .then( res => console.log(res.message))
+    .then( () => {
+        // update photo after upload of image
+        const photo = formData.get('edit_location_img')
+        
+        if (photo.size !== 0) {
+            // extract photo name and convert photo name to format on server
+            let photoName = photo.name
+            photoName = photoName.replaceAll(' ', '_')
+            
+            // update photo in location list
+            updatePhoto(location, photoName)
+        }
 
+    })
+
+    
     hidePopup()
 
     return false
+}
+
+
+function updatePhoto(location, photoName) {
+    // select location where photo will be inserted
+    const imageElement = location.children[1]
+    
+    if (imageElement.tagName === 'IMG') {
+        // if there is an image update source of new image         
+        imageElement.setAttribute('src', `http://localhost:8000/media/images/${photoName}`)
+    }
+    else {
+        // remove em tag
+        imageElement.remove()
+        const newImageElement = document.createElement('img')
+        newImageElement.setAttribute('src', `http://localhost:8000/media/images/${photoName}`)
+        location.insertBefore(newImageElement, location.children[1])
+    }
+    
+    
+    // change existing element to new one
+    console.log(imageElement)
+
+
 }
 
 
@@ -434,9 +469,13 @@ function createLocationItem(formData, newLocationId) {
 
     if (photo.size !== 0) {
         locationPhoto = document.createElement('img')
+        locationPhoto.setAttribute('src', `http://localhost:8000/media/images/${photo.name.replaceAll(' ', '_')}`)
+        locationPhoto.setAttribute('alt', 'location image')
+
     }
     else {
         locationPhoto = document.createElement('em')
+        locationPhoto.innerHTML = 'no image yet'
     }
 
     // append necessary classes
@@ -446,9 +485,7 @@ function createLocationItem(formData, newLocationId) {
     // add attributes 
     locationEditButton.setAttribute('type', 'button')
     locationEditButton.setAttribute('data-id', `${newLocationId}`)
-    locationPhoto.setAttribute('src', `http://localhost:8000/media/images/${photo.name.replaceAll(' ', '_')}`)
-    locationPhoto.setAttribute('alt', 'location image')
-
+    
     // fill elements with new content
     locationName.innerHTML = name
     LocationDescription.innerHTML = description

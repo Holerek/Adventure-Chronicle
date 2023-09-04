@@ -8,7 +8,8 @@ Web application, written in django framework for keeping track of our adventures
 * [pillow](https://pypi.org/project/Pillow/) - uploading images
 
 ## To Do:
-* create new location item after submitting new location form. 
+* generate new markers after adding new location
+* allow to change coordinates of existing markers
 * management of map markers/popups (additional behaviors)
 * upload and display routes (form gpx files)
 * shearing adventures with other users
