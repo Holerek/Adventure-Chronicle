@@ -81,7 +81,7 @@
             <div class="location-list" id="location-list-{{day.id}}">
                 <button type="button" class="add-location" data-id="{{day.id}}" >Add Location</button>
                 {% for location in locations %}
-                    <div class="location-item location">
+                    <div class="location-item location" id="location-{location.id}">
                         <strong>{{location.name}}</strong>
                         {% if location.photo %}
                         <img src="{{location.photo.url}}" alt="location image" >

@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // add action to all edit location buttons
     activateEditLocationButtons()
+
+    //
+    dynamicPopupSelector()
     
 
     const divs = document.querySelectorAll('.adv-item')
@@ -70,6 +73,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 })
+
+
+function onMapClick(e) {
+    
+    // delete old marker
+    if (mainMarker !== null) {
+        map.removeLayer(mainMarker)
+    }
+
+    // create new marker
+    let lat = e.latlng.lat
+    let lng = e.latlng.lng
+    mainMarker = L.marker([lat, lng]).addTo(map)
+
+    // bind popup to marker
+    if (addLocationStatus === false) {
+        mainMarker.bindPopup("normal popup").openPopup()
+    }
+    else if (addLocationStatus === true) {
+        mainMarker.bindPopup("New Location").openPopup()
+        document.getElementById('id_new_location_lat').value = lat
+        document.getElementById('id_new_location_lng').value = lng
+    }
+}
 
 
 function showAddDayForm() {
@@ -159,7 +186,6 @@ function saveEditedLocation(location) {
 
     })
 
-    
     hidePopup()
 
     return false
@@ -202,9 +228,9 @@ function deleteLocation() {
         })
     })
     .then(response => response.json())
-    .then(message => alert(message.message))
+    .then(message => console.log(message.message))
     
-    //remove delete day div
+    //remove location from location list
     activeEditLocationPopup.remove()
     
     //hide popup and reset activeEditDayPopup value 
@@ -358,6 +384,7 @@ function addLocation() {
     .then( res => {
         hideNewLocationForm(formData.get('new_location_day'))
         createLocationItem(formData, res.new_location_id)
+        mainMarker.hidePopup
         console.log(res.message)
     })
 
@@ -379,52 +406,37 @@ function hideNewLocationForm(dayId) {
 }
 
 
-function onMapClick(e) {
-    
-    // delete old marker
-    if (mainMarker !== null) {
-        map.removeLayer(mainMarker)
-    }
-
-    // create new marker
-    let lat = e.latlng.lat
-    let lng = e.latlng.lng
-    mainMarker = L.marker([lat, lng]).addTo(map)
-
-    // bind popup to marker
-    if (addLocationStatus === false) {
-        mainMarker.bindPopup("normal popup").openPopup()
-    }
-    else if (addLocationStatus === true) {
-        mainMarker.bindPopup("New Location").openPopup()
-        document.getElementById('id_new_location_lat').value = lat
-        document.getElementById('id_new_location_lng').value = lng
-    }
-}
-
-
 function loadMarkers() {
     const markersData = JSON.parse(document.getElementById('markers-data').textContent)
     markersData.forEach( day => {
         let locations = day.locations
         locations.forEach( location => {
             
-            let marker = L.marker([location.fields.lat, location.fields.lng]).addTo(map)
+            let marker = L.marker([location.fields.lat, location.fields.lng], {alt: `marker-id-${location.pk}`}).addTo(map)
             var popupContent = createPopupContent(location)
             marker.bindPopup(popupContent)
+            
         
         })
     })
 }
 
 
-function createPopupContent({fields: {name, description, photo}}) {
+function addMarker(lat, lng, locationData) {
+    let marker = L.marker([lat, lng], {alt: `marker-id-${locationData.fields.pk}`}).addTo(map)
+    let popupContent = createPopupContent(locationData)
+    marker.bindPopup(popupContent)
+    marker.openPopup()
+}
+
+
+function createPopupContent({fields: {name, description, photo,}}) {
     // create elements of popup content
     const popupContent = document.createElement('div')
     const popupName = document.createElement('strong')
     const popupDescription = document.createElement('span')
     const popupImg = document.createElement('img')
-    
+
     // fill elements with data
     popupName.innerHTML = name
     popupDescription.innerHTML = description
@@ -485,6 +497,7 @@ function createLocationItem(formData, newLocationId) {
     // add attributes 
     locationEditButton.setAttribute('type', 'button')
     locationEditButton.setAttribute('data-id', `${newLocationId}`)
+    locationDiv.setAttribute('id', `location-${newLocationId}`)
     
     // fill elements with new content
     locationName.innerHTML = name
@@ -507,6 +520,63 @@ function createLocationItem(formData, newLocationId) {
         
         showEditLocationForm(locationDiv)
     }
+
+    // create new marker
+    let lat = formData.get('new_location_lat')
+    let lng = formData.get('new_location_lng')
+    let locationData = {fields: {
+        'name': name,
+        'description': description,
+        'photo': `images/${photoName}`,
+        'pk': newLocationId,
+    }}
+    console.log(locationData)
+    addMarker(lat, lng, locationData)
+    
+    // add events to new location div
+    locationActions(locationDiv)
     
     return 0
+}
+
+
+// add events to existing locations and markers send by server
+function dynamicPopupSelector() {
+    const locations = document.querySelectorAll('.location')
+    locations.forEach(location => {
+        locationActions(location)
+    })
+}
+
+
+function locationActions (location) {
+    console.log(location)
+    const locationId = location.children[3].dataset.id
+    const marker = document.querySelector(`img[alt=marker-id-${locationId}]`)
+    const markerSrc = marker.src
+
+    location.onclick = function(e) {
+        if (e.target.tagName !== 'BUTTON') {
+            marker.click()
+        }
+    }
+
+    location.onmouseover = function() {
+        marker.src = '/static/adventure/img/red-marker.png'
+        location.style = 'background-color: rgb(220, 211, 184, 0.3)'
+
+    }
+
+    location.onmouseout = function() {
+        marker.src = markerSrc
+        location.style = 'background-color: white'
+    }
+
+    marker.onmouseover = function() {
+        location.style = 'background-color: rgb(220, 211, 184, 0.3)'
+    }
+
+    marker.onmouseout = function() {
+        location.style = 'background-color: white'
+    }
 }
