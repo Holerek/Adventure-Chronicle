@@ -14,6 +14,13 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap'
 }).addTo(map)
 
+// custom icon 
+var greenMarker = L.icon({
+    iconUrl: '/static/adventure/img/green-marker.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [0, -41]
+})
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -34,11 +41,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // add action to all edit location buttons
     activateEditLocationButtons()
-
+    
+    // add actions to all add location/hide buttons
+    ActivateAddLocationButtons()
+    
+    // add actions to all edit day buttons
+    activateEditDayButtons()
+    
     //
     dynamicPopupSelector()
     
 
+    
+})
+
+
+function onMapClick(e) {
+    
+    // delete old marker
+    if (mainMarker !== null) {
+        map.removeLayer(mainMarker)
+        mainMarker = null
+    }
+    else {
+        // create new marker
+        let lat = e.latlng.lat
+        let lng = e.latlng.lng
+        // mainMarker = L.marker([lat, lng]).addTo(map)
+
+        // bind popup to marker
+        if (addLocationStatus === false) {
+            mainMarker = L.marker([lat, lng], {icon: greenMarker}).addTo(map)  
+        }
+        else if (addLocationStatus === true) {
+            mainMarker = L.marker([lat, lng]).addTo(map)
+            mainMarker.bindPopup("New Location").openPopup()
+            document.getElementById('id_new_location_lat').value = lat
+            document.getElementById('id_new_location_lng').value = lng
+        }
+    }
+}
+
+
+function showAddDayForm() {
+    const form = document.querySelector("#add-day-form")
+    const button = document.getElementById("show-add-day-form")
+
+    if (form.style.display == "none") {
+        form.style.display = "flex"
+        button.innerHTML = "Hide"
+    } else {
+        form.style.display = "none"
+        button.innerHTML = "Add Day"
+    }
+}
+
+
+function activateEditDayButtons() {
+    
     const divs = document.querySelectorAll('.adv-item')
     
     divs.forEach(div => {
@@ -72,44 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
             deactivateBackground(true)
         }
     })
-})
-
-
-function onMapClick(e) {
-    
-    // delete old marker
-    if (mainMarker !== null) {
-        map.removeLayer(mainMarker)
-    }
-
-    // create new marker
-    let lat = e.latlng.lat
-    let lng = e.latlng.lng
-    mainMarker = L.marker([lat, lng]).addTo(map)
-
-    // bind popup to marker
-    if (addLocationStatus === false) {
-        mainMarker.bindPopup("normal popup").openPopup()
-    }
-    else if (addLocationStatus === true) {
-        mainMarker.bindPopup("New Location").openPopup()
-        document.getElementById('id_new_location_lat').value = lat
-        document.getElementById('id_new_location_lng').value = lng
-    }
-}
-
-
-function showAddDayForm() {
-    const form = document.querySelector("#add-day-form")
-    const button = document.getElementById("show-add-day-form")
-
-    if (form.style.display == "none") {
-        form.style.display = "flex"
-        button.innerHTML = "Hide"
-    } else {
-        form.style.display = "none"
-        button.innerHTML = "Add Day"
-    }
 }
 
 
@@ -193,26 +215,35 @@ function saveEditedLocation(location) {
 
 
 function updatePhoto(location, photoName) {
+    //open popup to make possible to read its content and replace it
+    location.click()
+
     // select location where photo will be inserted
     const imageElement = location.children[1]
+    const locationId = location.children[3].dataset.id
+    const markerImage = document.getElementById(`location-popup-${locationId}`).children[1]
     
     if (imageElement.tagName === 'IMG') {
         // if there is an image update source of new image         
         imageElement.setAttribute('src', `http://localhost:8000/media/images/${photoName}`)
+        markerImage.setAttribute('src', `http://localhost:8000/media/images/${photoName}`)
     }
     else {
-        // remove em tag
+        // remove em tag and append img tag in location list
         imageElement.remove()
         const newImageElement = document.createElement('img')
         newImageElement.setAttribute('src', `http://localhost:8000/media/images/${photoName}`)
         location.insertBefore(newImageElement, location.children[1])
+        
+        //remove em tam and append img tag in marker popup
+        markerImage.remove()
+        const newImageElement2 = document.createElement('img')
+        newImageElement2.setAttribute('src', `http://localhost:8000/media/images/${photoName}`)
+        document.getElementByIdr(`location-popup-${locationId}`).append(newImageElement2)
     }
-    
-    
-    // change existing element to new one
-    console.log(imageElement)
 
-
+    //close popup after modifying content
+    location.click()
 }
 
 
@@ -329,7 +360,7 @@ function deleteDay() {
 
 
 // show add location form for each day
-addEventListener('DOMContentLoaded', function() {
+function ActivateAddLocationButtons () {
     const buttons = document.querySelectorAll('.add-location')
     buttons.forEach( button => {
         
@@ -337,17 +368,19 @@ addEventListener('DOMContentLoaded', function() {
             const newLocationForm = document.getElementById('new-location-form')
             const addLocationDay = document.getElementById('id_new_location_day')
             if (button.innerHTML === 'Hide') {
-                newLocationForm.style.display = 'none'
+                hideNewLocationForm(button.dataset.id)
+                // newLocationForm.style.display = 'none'
                 addLocationStatus = false
                 addLocationDay.value = undefined
-                button.innerHTML = 'Add Location'
+                // button.innerHTML = 'Add Location'
             }
             else {
                 // reset all add location buttons
                 buttons.forEach( b => {
                     b.innerHTML = 'Add Location'
                 })
-
+                // reset form
+                newLocationForm.reset()
                 // show new location form by selecting and moving form element
                 button.innerHTML = 'Hide'
                 newLocationForm.style.marginTop = '10px'
@@ -365,7 +398,7 @@ addEventListener('DOMContentLoaded', function() {
         }
     })
     
-})
+}
 
 
 function addLocation() {
@@ -430,7 +463,7 @@ function addMarker(lat, lng, locationData) {
 }
 
 
-function createPopupContent({fields: {name, description, photo,}}) {
+function createPopupContent({fields: {name, description, photo,}, pk}) {
     // create elements of popup content
     const popupContent = document.createElement('div')
     const popupName = document.createElement('strong')
@@ -450,8 +483,9 @@ function createPopupContent({fields: {name, description, photo,}}) {
         popupImg.alt = 'no image yet'
     }
     
-    // add classes 
+    // add classes and attributes
     popupContent.classList.add('location-popup')
+    popupContent.setAttribute('id', `location-popup-${pk}`)
 
     // bind all elements 
     popupContent.appendChild(popupName)
@@ -481,7 +515,7 @@ function createLocationItem(formData, newLocationId) {
 
     if (photo.size !== 0) {
         locationPhoto = document.createElement('img')
-        locationPhoto.setAttribute('src', `http://localhost:8000/media/images/${photo.name.replaceAll(' ', '_')}`)
+        locationPhoto.setAttribute('src', `http://localhost:8000/media/images/${photoName}`)
         locationPhoto.setAttribute('alt', 'location image')
 
     }
@@ -530,7 +564,7 @@ function createLocationItem(formData, newLocationId) {
         'photo': `images/${photoName}`,
         'pk': newLocationId,
     }}
-    console.log(locationData)
+    
     addMarker(lat, lng, locationData)
     
     // add events to new location div
@@ -550,7 +584,7 @@ function dynamicPopupSelector() {
 
 
 function locationActions (location) {
-    console.log(location)
+
     const locationId = location.children[3].dataset.id
     const marker = document.querySelector(`img[alt=marker-id-${locationId}]`)
     const markerSrc = marker.src
