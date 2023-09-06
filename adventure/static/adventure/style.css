@@ -37,6 +37,7 @@ body {
     display: flex;
     flex-direction: row;
     z-index: 1;
+    
 }
 
 .adventure-item > img {
@@ -48,7 +49,8 @@ body {
 }
 
 .adventure-item > div {
-    width: calc(100% - 44px);
+    margin-right: 0.3em;
+    overflow: hidden;
 }
 
 #newAdventure {
@@ -106,7 +108,7 @@ body {
 }
 
 
-.adv-contener {
+.adv-container {
     position: fixed;
     height:100vh;
     width: 30vw;
@@ -170,11 +172,30 @@ input {
 }
 
 #map {
+    position: fixed;
     height:100vh;
     width: 70vw;
-    position: fixed;
     left:0 ;
     top:0;
+}
+
+@media screen and (max-width: 700px) {
+    #map {
+        position: relative;
+        height:50vh;
+        width: 100vw;
+    }
+
+    .adv-contener {
+        position: relative;
+        left: 0;
+        height:50vh;
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: scroll;
+    }
 }
 
 .popup {
