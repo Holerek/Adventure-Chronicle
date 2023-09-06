@@ -18,9 +18,7 @@
 
         {% for adv in adventures %}
             <div data-id='{{adv.id}}' class="adventure-item">
-                <div>
                     <span>{{adv.title}}</span>
-                </div>
                 <img src="{% static 'adventure/img/delete.svg' %}" alt="trash icon for delete adventure">
             </div>
         {% empty %}

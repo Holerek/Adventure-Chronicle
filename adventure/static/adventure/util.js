@@ -13,3 +13,62 @@ export function getCookie(name) {
     }
     return cookieValue;
 }
+
+
+export function deactivateBackground(state) {
+    const dayList = document.querySelector(".adv-container")
+    const mapView = document.querySelector("#map")
+    
+    if (state) {
+        //disable day list
+        dayList.style.opacity = 0.5
+        dayList.style.pointerEvents = "none"
+        
+        //disable map
+        mapView.style.opacity = 0.5
+        mapView.style.pointerEvents = "none"
+    }
+    else {
+        //enable day list
+        dayList.style.opacity = 1
+        dayList.style.pointerEvents = "auto"
+
+        //enable map
+        mapView.style.opacity = 1
+        mapView.style.pointerEvents = "auto"
+    }
+}
+
+
+export function createConfirmationPopup(elementTitle) {
+    //create popup elements
+    const popup = document.createElement('div')
+    const message = document.createElement('p')
+    const cancelButton = document.createElement('button') 
+    const deleteButton = document.createElement('button') 
+
+    // fill elements
+    cancelButton.innerHTML = 'Cancel'
+    deleteButton.innerHTML = 'Delete'
+    message.innerHTML = `Delete <strong>${elementTitle}</strong>`
+    
+    // add classes
+    popup.classList.add('popup')
+    popup.classList.add('adv-form')
+    cancelButton.classList.add('cancel')
+    deleteButton.classList.add('delete')
+    
+    // apply necessary styling 
+    popup.style.display = 'block'
+    popup.style.width = 'auto'
+    cancelButton.style.marginRight = '3em'
+    message.style.textAlign= 'center'
+
+    // combine all elements together
+    popup.append(message, cancelButton, deleteButton)
+
+    // add popup to html body
+    document.querySelector('body').append(popup)
+
+    return [popup, cancelButton, deleteButton]
+}

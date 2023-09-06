@@ -1,4 +1,4 @@
-import {getCookie} from "./util.js"
+import {getCookie, deactivateBackground, createConfirmationPopup} from "./util.js"
 
 
 // variable to control state or behavior of functions
@@ -283,29 +283,7 @@ function hidePopup() {
 }
 
 
-function deactivateBackground(state) {
-    const dayList = document.querySelector(".adv-contener")
-    const mapView = document.querySelector("#map")
-    
-    if (state) {
-        //disable day list
-        dayList.style.opacity = 0.5
-        dayList.style.pointerEvents = "none"
-        
-        //disable map
-        mapView.style.opacity = 0.5
-        mapView.style.pointerEvents = "none"
-    }
-    else {
-        //enable day list
-        dayList.style.opacity = 1
-        dayList.style.pointerEvents = "auto"
 
-        //enable map
-        mapView.style.opacity = 1
-        mapView.style.pointerEvents = "auto"
-    }
-}
 
 
 function showMore() {
@@ -336,24 +314,67 @@ function showMore() {
 
 function deleteDay() {
     const dayId = document.getElementById('day_id').value
-    
-    fetch('/delete-day', {
-        method: 'POST',
-        headers: {'X-CSRFToken': getCookie('csrftoken')},
-        mode: 'same-origin',
-        body: JSON.stringify({
-            day_id: dayId,
+    const date = activeEditDayPopup.children[0].innerHTML
+    // initiate variables that will be returned by next function
+    let popup, cancelButton, deleteButton
+
+    // create popup that asks for confirmation and return elements to interact 
+    [popup, cancelButton, deleteButton] = createConfirmationPopup(date)
+
+    deleteButton.onclick = function() {
+        fetch('/delete-day', {
+            method: 'POST',
+            headers: {'X-CSRFToken': getCookie('csrftoken')},
+            mode: 'same-origin',
+            body: JSON.stringify({
+                day_id: dayId,
+            })
         })
-    })
-    .then(response => response.json())
-    .then(message => alert(message.message))
+        .then(response => response.json())
+        .then(message => console.log(message.message))
+        .then( () => {
+            //remove delete day div
+            activeEditDayPopup.remove()
     
-    //remove delete day div
-    activeEditDayPopup.remove()
+            //remove confirmation popup 
+            popup.remove()
+            
+            //hide edit day popup and reset activeEditDayPopup value 
+            hidePopup()
+        })
+    }
     
-    //hide popup and reset activeEditDayPopup value 
-    hidePopup()
+    cancelButton.onclick = function() {
+        popup.remove()
+    }
+
+    
+    
 }
+
+
+function confirmAdventureDeletion(adv, advId, advTitle) {
+    // initiate variables that will be returned by next function
+    let popup, cancelButton, deleteButton
+
+    // create popup that asks for confirmation and return elements to interact 
+    [popup, cancelButton, deleteButton] = createConfirmationPopup(advTitle.innerHTML)
+    
+    deactivateBackground(true)
+
+    deleteButton.onclick = function() {
+        deleteAdventure(adv, advId)
+        popup.remove()
+        deactivateBackground(false)
+    }
+    
+    cancelButton.onclick = function() {
+        popup.remove()
+        deactivateBackground(false)
+    }
+}
+
+
 
 
 // =============================================================================================
