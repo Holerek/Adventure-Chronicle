@@ -27,7 +27,7 @@ function activateAdventureActions() {
         
         // edit location
         editImg.onclick = function() {
-            editLocation(advTitle, advId)
+            showEditAdventureForm(advTitle, advId)
         }
 
         // delete adventure
@@ -71,18 +71,53 @@ function deleteAdventure(adv, advId) {
     })
     .then(response => response.json())
     .then(message => {
-        console.log(message)
+        console.log(message.message)
         adv.remove()
     })
 }
 
 
-function editLocation(title, id) {
-    return alert('test')
-    showEditAdventureForm()
-
+function saveEditAdventure(title, id) {
+    const form = document.getElementById('edit-adv-form')
+    const formData = new FormData(form)
+    
+    fetch('/edit-adventure', {
+        method: 'POST',
+        mode: "same-origin",
+        body: formData,
+    })
+    .then( response => response.json())
+    .then( res => console.log(res.message))
+    .then( () => {
+        // update adventure data
+        title.innerHTML = formData.get('edit_adventure_title')
+    })
 }
 
+function showEditAdventureForm(title, id) {
+    
+    // show popup
+    const popup = document.getElementById('edit-adv-div')
+    popup.style.display = 'flex'
+
+    // prefill data
+    document.getElementById('id_edit_adventure_title').value = title.innerHTML
+    document.getElementById('id_edit_adventure_id').value = id
+
+    // add action to cancel button 
+    document.getElementById('edit-adv-cancel').onclick = () => {
+        popup.style.display = 'none'
+        deactivateBackground(false)
+    }
+
+    document.getElementById('edit-adv-save').onclick = () => {
+        saveEditAdventure(title, id)
+        popup.style.display = 'none'
+        deactivateBackground(false)
+    }
+    
+    deactivateBackground(true)
+}
 
 function showAddAdventureForm() {
     const form = document.querySelector("#newAdventure")

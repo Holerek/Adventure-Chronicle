@@ -1,17 +1,35 @@
 {% extends "adventure/layout.html" %}
 {% load static %}
 
+
 {% block script %}
     <script src="{% static 'adventure/util.js' %}" type="module"></script>
     <script src="{% static 'adventure/index.js' %}" type="module"></script>
 {% endblock %}
 
+
 {% block map-script %}
     <script src="{% static 'adventure/map.js' %}" type="module"></script>
 {% endblock %}
 
-{% block body %}
 
+{% block popup %}
+    <div class="popup" id="edit-adv-div">
+        <form class="adv-form" id="edit-adv-form" action="{% url 'create adventure' %}" method="post">
+            <div class="line">
+                <h2>Edit Adventure </h2>
+                <button type="button" id="edit-adv-cancel" name="edit-adv-cancel" class="cancel">Cancel</button>
+            </div>    
+            {% csrf_token %}
+            {{ edit_adv_form }}
+            <input class="input-button save" id="edit-adv-save" type="button" value="Save changes"></submit>
+        </form>
+    </div>
+{% endblock %}
+
+
+
+{% block body %}
     <h1 class="title">Adventure Chronicles</h1>
 
     {% if user.is_authenticated %}
@@ -31,9 +49,9 @@
     </div>
     
     <div id="newAdventure" style="display: none;">
-        <form class="adv-form" action="{% url 'create adventure' %}" method="post">
+        <form class="adv-form" id="adventure-form" action="{% url 'create adventure' %}" method="post">
             {% csrf_token %}
-            {{ form }}
+            {{ new_adv_form }}
             <input type="submit" value="Submit">
         </form>
     </div>

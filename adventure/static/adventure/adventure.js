@@ -173,7 +173,7 @@ function showEditLocationForm(location) {
 
     deactivateBackground(true)
 
-    document.getElementById('edit-location-form').onsubmit = () => {
+    form.onsubmit = () => {
         saveEditedLocation(location)
         currentName.innerHTML = newName.value
         currentDescription.innerHTML = newDescription.value
@@ -347,37 +347,7 @@ function deleteDay() {
     cancelButton.onclick = function() {
         popup.remove()
     }
-
-    
-    
 }
-
-
-function confirmAdventureDeletion(adv, advId, advTitle) {
-    // initiate variables that will be returned by next function
-    let popup, cancelButton, deleteButton
-
-    // create popup that asks for confirmation and return elements to interact 
-    [popup, cancelButton, deleteButton] = createConfirmationPopup(advTitle.innerHTML)
-    
-    deactivateBackground(true)
-
-    deleteButton.onclick = function() {
-        deleteAdventure(adv, advId)
-        popup.remove()
-        deactivateBackground(false)
-    }
-    
-    cancelButton.onclick = function() {
-        popup.remove()
-        deactivateBackground(false)
-    }
-}
-
-
-
-
-// =============================================================================================
 
 
 // show add location form for each day

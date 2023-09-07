@@ -3,24 +3,33 @@ import os
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 from django.core import serializers
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from .models import Adventure, Day, Location
-from .forms import NewAdventureForm, NewDayForm, EditDayForm, NewLocationForm, EditLocationForm
+from .forms import NewAdventureForm, EditAdventureForm, NewDayForm, EditDayForm, NewLocationForm, EditLocationForm
 
 # from ..chronicle.settings import MEDIA_ROOT
 from django.conf import settings
 
 # Create your views here
 def index(request):
+
+    # check if there is a message
+    try:
+        message = request.GET['message']
+    except:
+        message = None
     
     adventures = Adventure.objects.filter(author = request.user.id)
     return render(request, 'adventure/index.html', {
+        'message': message,
         'adventures': adventures,
-        'form': NewAdventureForm(),
+        'new_adv_form': NewAdventureForm(),
+        'edit_adv_form': EditAdventureForm(),
     })
 
 
@@ -103,8 +112,33 @@ def create_adventure(request):
             return JsonResponse({
                 'message': f'Adventure (id={adv_id}) has been deleted',
             })
-        
+    
+    if request.method == "PUT":
+        print('method test put')
+
     return redirect(reverse('index'))
+
+
+@login_required
+@require_http_methods(['POST'])
+def edit_adventure(request):
+    
+    form = EditAdventureForm(request.POST)
+    
+    if form.is_valid():
+        data = form.cleaned_data
+        adventure = Adventure.objects.get(pk=data['edit_adventure_id'])
+        
+        #validate if user is an author of adventure 
+        if request.user == adventure.author:
+            adventure.title = data['edit_adventure_title']
+            adventure.save()
+
+            return JsonResponse({
+                'message': 'Adventure has been modified'
+            })      
+
+    return HttpResponse('400 Invalid data')
 
 
 @login_required
