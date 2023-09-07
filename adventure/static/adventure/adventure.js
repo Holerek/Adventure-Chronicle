@@ -255,23 +255,39 @@ function updatePhoto(location, photoName) {
 
 function deleteLocation() {
     const locationId = document.getElementById('id_edit_location_id')
+    const locationName = document.getElementById('id_edit_location_name').value
     
-    fetch('/delete-location', {
-        method: 'POST',
-        headers: {'X-CSRFToken': getCookie('csrftoken')},
-        mode: 'same-origin',
-        body: JSON.stringify({
-            location_id: locationId.value,
+    // initiate variables that will be returned by next function
+    let popup, cancelButton, deleteButton
+
+    // create popup that asks for confirmation and return elements to interact 
+    [popup, cancelButton, deleteButton] = createConfirmationPopup(locationName)
+
+    deleteButton.onclick = function() {
+        fetch('/delete-location', {
+            method: 'POST',
+            headers: {'X-CSRFToken': getCookie('csrftoken')},
+            mode: 'same-origin',
+            body: JSON.stringify({
+                location_id: locationId.value,
+            })
         })
-    })
-    .then(response => response.json())
-    .then(message => console.log(message.message))
-    
-    //remove location from location list
-    activeEditLocationPopup.remove()
-    
-    //hide popup and reset activeEditDayPopup value 
-    hidePopup()
+        .then(response => response.json())
+        .then(message => console.log(message.message))
+        
+        //remove location from location list
+        activeEditLocationPopup.remove()
+
+        //remove confirmation popup 
+        popup.remove()
+        
+        //hide popup and reset activeEditDayPopup value 
+        hidePopup()
+    }
+
+    cancelButton.onclick = function() {
+        popup.remove()
+    }
 }
 
 
