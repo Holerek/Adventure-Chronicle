@@ -215,31 +215,37 @@ function saveEditedLocation(location) {
 
 
 function updatePhoto(location, photoName) {
-    //open popup to make possible to read its content and replace it
-    location.click()
-
+    
+    
     // select location where photo will be inserted
     const imageElement = location.children[1]
     const locationId = location.children[3].dataset.id
-    const markerImage = document.getElementById(`location-popup-${locationId}`).children[1]
+    let markerImage
+    try {
+        markerImage = document.getElementById(`location-popup-${locationId}`).children[1]
+    }
+    catch(_) {
+        location.click()
+        markerImage = document.getElementById(`location-popup-${locationId}`).children[1]
+    }
     
+    //open popup to make possible to read its content and replace it
+    
+    
+    markerImage.setAttribute('src', `/media/images/${photoName}`)
+
     if (imageElement.tagName === 'IMG') {
         // if there is an image update source of new image         
-        imageElement.setAttribute('src', `http://localhost:8000/media/images/${photoName}`)
-        markerImage.setAttribute('src', `http://localhost:8000/media/images/${photoName}`)
+        imageElement.setAttribute('src', `/media/images/${photoName}`)
+        
     }
     else {
         // remove em tag and append img tag in location list
         imageElement.remove()
         const newImageElement = document.createElement('img')
-        newImageElement.setAttribute('src', `http://localhost:8000/media/images/${photoName}`)
+        newImageElement.setAttribute('src', `/media/images/${photoName}`)
         location.insertBefore(newImageElement, location.children[1])
-        
-        //remove em tam and append img tag in marker popup
-        markerImage.remove()
-        const newImageElement2 = document.createElement('img')
-        newImageElement2.setAttribute('src', `http://localhost:8000/media/images/${photoName}`)
-        document.getElementByIdr(`location-popup-${locationId}`).append(newImageElement2)
+
     }
 
     //close popup after modifying content
@@ -506,7 +512,7 @@ function createLocationItem(formData, newLocationId) {
 
     if (photo.size !== 0) {
         locationPhoto = document.createElement('img')
-        locationPhoto.setAttribute('src', `http://localhost:8000/media/images/${photoName}`)
+        locationPhoto.setAttribute('src', `/media/images/${photoName}`)
         locationPhoto.setAttribute('alt', 'location image')
 
     }
