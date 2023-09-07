@@ -42,14 +42,14 @@ body {
 
 .adventure-item > img {
     display:block;
-    margin-left: auto;
+    margin-left: 0.3em;
     margin-top: auto;
     height: 20px;
     z-index: 5;
 }
 
-.adventure-item > div {
-    margin-right: 0.3em;
+.adventure-item > span {
+    margin-right: auto;
     overflow: hidden;
 }
 
@@ -186,7 +186,7 @@ input {
         width: 100vw;
     }
 
-    .adv-contener {
+    .adv-container {
         position: relative;
         left: 0;
         height:50vh;

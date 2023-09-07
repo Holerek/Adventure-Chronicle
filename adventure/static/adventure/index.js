@@ -13,18 +13,24 @@ function activateAdventureActions() {
     const adventures = document.querySelectorAll('.adventure-item')
     adventures.forEach( adv => {
         const children = adv.children
-        const deleteImg = children[1]
-        const advId = adv.dataset.id
         const advTitle = children[0]
+        const editImg = children[1]
+        const deleteImg = children[2]
+        const advId = adv.dataset.id
     
-        //click to open adventure site
+        // click to open adventure site
         adv.onclick = function(e) {
             if (e.target.tagName !== 'IMG') {
                 window.location.href = "/adventure/" + advId
             }
         }
-    
-        //delete adventure
+        
+        // edit location
+        editImg.onclick = function() {
+            editLocation(advTitle, advId)
+        }
+
+        // delete adventure
         deleteImg.onclick = function() {
             confirmAdventureDeletion(adv, advId, advTitle)
         }
@@ -68,6 +74,13 @@ function deleteAdventure(adv, advId) {
         console.log(message)
         adv.remove()
     })
+}
+
+
+function editLocation(title, id) {
+    return alert('test')
+    showEditAdventureForm()
+
 }
 
 
