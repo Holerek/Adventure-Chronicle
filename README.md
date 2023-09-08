@@ -50,4 +50,3 @@ Install all requirements and in main application folder run command:
 * **index.js** - main page, creating new adventure
 * **map.js** - manage all action connected with map (Leaflet)
 * **adventure.js** - adventure page, creating new days and location 
-

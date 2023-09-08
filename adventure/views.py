@@ -289,6 +289,7 @@ def edit_location(request):
                 
                 # prevent deleting existing img if no image was send 
                 if data['edit_location_img']:
+                    delete_images([location.photo])
                     location.photo = data['edit_location_img']
                 
                 location.save()
