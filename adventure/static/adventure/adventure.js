@@ -222,16 +222,17 @@ function updatePhoto(location, photoName) {
     const imageElement = location.children[1]
     const locationId = location.children[3].dataset.id
     let markerImage
+    
     try {
         markerImage = document.getElementById(`location-popup-${locationId}`).children[1]
     }
     catch(_) {
+        //open popup to make possible to read its content and replace it
         location.click()
         markerImage = document.getElementById(`location-popup-${locationId}`).children[1]
+        //close popup after read of its content
+        location.click()
     }
-    
-    //open popup to make possible to read its content and replace it
-    
     
     markerImage.setAttribute('src', `/media/images/${photoName}`)
 
@@ -248,9 +249,6 @@ function updatePhoto(location, photoName) {
         location.insertBefore(newImageElement, location.children[1])
 
     }
-
-    //close popup after modifying content
-    location.click()
 }
 
 
@@ -510,7 +508,7 @@ function loadMarkers() {
 function addMarker(lat, lng, locationData) {
     // pk is inside fields because locationData was prepared by createLocationItem and not by parsing data from server
     
-    const locationId = locationData.fields.pk
+    const locationId = locationData.pk
     let marker = L.marker([lat, lng], {alt: `marker-id-${locationId}`}).addTo(map)
     let popupContent = createPopupContent(locationData)
     marker.bindPopup(popupContent)
@@ -622,9 +620,9 @@ function createLocationItem(formData, newLocationId) {
     let locationData = {fields: {
         'name': name,
         'description': description,
-        'photo': `images/${photoName}`,
-        'pk': newLocationId,
-    }}
+        'photo': `images/${photoName}`},
+        pk: newLocationId,
+    }
     
     addMarker(lat, lng, locationData)
     
