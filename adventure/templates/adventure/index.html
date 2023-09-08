@@ -56,8 +56,13 @@
         </form>
     </div>
     {% else %}
-        <div>
+        <div style="text-align: center;">
             <span>To create your own adventures please</span>
+            <br>
+            <a href="{% url 'login' %}">Log in</a>
+            <br>
+            <span>or</span>
+            <br>
             <a href="{% url 'register' %}">Register</a>
         </div>
     {% endif %}
