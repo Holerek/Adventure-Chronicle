@@ -369,9 +369,13 @@ function deleteDay() {
                 day_id: dayId,
             })
         })
-        .then(response => response.json())
-        .then(message => console.log(message.message))
-        .then( () => {
+        .then(response => response.json()) 
+        .then(response => {
+            console.log(response.message)
+            
+            // delete markers for all locations in deleted day
+            deleteMarkers(response.locations) 
+            
             //remove delete day div
             activeEditDayPopup.remove()
     

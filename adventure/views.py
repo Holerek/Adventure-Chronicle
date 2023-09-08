@@ -62,6 +62,7 @@ def adventure(request, id, message=None):
 
         if days:
             for i in range(len(days)):
+                print(days[i].date)
                 locations = Location.objects.filter(day=days[i])
                 json_locations = json.loads(serializers.serialize('json', locations))
                 
@@ -210,10 +211,15 @@ def delete_day(request):
     if request.method == "POST":
         data = json.loads(request.body)
         day = Day.objects.get(pk=data['day_id'])
+        
+        # create list of locations id for deleting markers on map
+        locations = Location.objects.filter(day=day)
+        locations_ids = [location.pk for location in locations]
 
         if request.user == day.adventure.author:
             day.delete()
-            return JsonResponse({'message': 'Deletion completed'})
+            return JsonResponse({'message': 'Deletion completed',
+                                 'locations': locations_ids,})
     
     # go back to main page after GET request
     return redirect(reverse('index'))
