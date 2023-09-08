@@ -6,6 +6,7 @@ var addLocationStatus = false
 var activeEditDayPopup = undefined
 var activeEditLocationPopup = undefined
 var mainMarker = null
+var allMarkers = []
 
 // initialize the map
 var map = L.map('map').setView([51.112, 17.036], 13)
@@ -278,6 +279,9 @@ function deleteLocation() {
         .then(response => response.json())
         .then(message => console.log(message.message))
         
+        // delete location marker
+        deleteMarkers([parseInt(locationId.value),])
+        
         //remove location from location list
         activeEditLocationPopup.remove()
 
@@ -480,8 +484,11 @@ function loadMarkers() {
             let marker = L.marker([location.fields.lat, location.fields.lng], {alt: `marker-id-${location.pk}`}).addTo(map)
             var popupContent = createPopupContent(location)
             marker.bindPopup(popupContent)
-            
-        
+
+            allMarkers.push({
+                id: location.pk,
+                marker: marker,
+            })
         })
     })
 }
@@ -645,4 +652,16 @@ function locationActions (location) {
     marker.onmouseout = function() {
         location.style = 'background-color: white'
     }
+}
+
+
+function deleteMarkers(locationsIds) {
+
+    allMarkers.forEach(marker => {
+        // check if marker is on list to delete
+        const found = locationsIds.find((element) => element === marker.id)
+        if (found) {
+            marker.marker.remove()
+        }
+    })
 }
