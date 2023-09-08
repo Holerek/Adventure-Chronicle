@@ -62,7 +62,7 @@ def adventure(request, id, message=None):
 
         if days:
             for i in range(len(days)):
-                print(days[i].date)
+                
                 locations = Location.objects.filter(day=days[i])
                 json_locations = json.loads(serializers.serialize('json', locations))
                 
@@ -88,7 +88,7 @@ def adventure(request, id, message=None):
 
 
 @login_required
-def create_adventure(request):
+def create_delete_adventure(request):
      #post request create new adventure in db
     if request.method == "POST":
         form = NewAdventureForm(request.POST)
@@ -107,15 +107,20 @@ def create_adventure(request):
         adv_id = data['adv_id']
         adventure = Adventure.objects.get(pk=adv_id)
 
+        # create list of locations image file names for deleting them
+        locations = Location.objects.filter(adventure=adventure)
+        locations_images = [location.photo for location in locations]
+
         # check if user is author of adventure
         if user == adventure.author:
             adventure.delete()
+
+            #delete all images of locations for that adventure
+            delete_images(locations_images)
+
             return JsonResponse({
                 'message': f'Adventure (id={adv_id}) has been deleted',
             })
-    
-    if request.method == "PUT":
-        print('method test put')
 
     return redirect(reverse('index'))
 
@@ -216,8 +221,16 @@ def delete_day(request):
         locations = Location.objects.filter(day=day)
         locations_ids = [location.pk for location in locations]
 
+        # create list of locations image file names for deleting them
+        locations_images = [location.photo for location in locations]
+        
+        print(locations_images)
         if request.user == day.adventure.author:
             day.delete()
+
+            #delete all images of locations for that day
+            delete_images(locations_images)
+
             return JsonResponse({'message': 'Deletion completed',
                                  'locations': locations_ids,})
     
@@ -248,7 +261,6 @@ def new_location(request):
                 photo = data['new_location_img']
             )
             new_location.save()
-            print(new_location.id)
             
         return JsonResponse({
             'message': 'Location added.',
@@ -298,14 +310,8 @@ def delete_location(request):
 
         location = Location.objects.get(pk=data['location_id'])
 
-        # generate location of image file
-        image_path = f'{settings.MEDIA_ROOT}/{location.photo}'
-
-        # if there is an image then delete it
-        try:
-            os.remove(image_path)
-        except: 
-            pass
+        file_name = location.photo
+        delete_images([file_name])
         
         # validate if user is an author of location
         if location.adventure.author == request.user:
@@ -369,3 +375,16 @@ def register(request):
         return HttpResponseRedirect(reverse('index'))
     else:
         return render(request, "adventure/register.html")
+
+
+def delete_images(files_names):
+
+    for file in files_names:
+        # generate location of image file
+        image_path = f'{settings.MEDIA_ROOT}/{file}'
+        print(f'deleting {file}')
+        # if there is an image then delete it
+        try:
+            os.remove(image_path)
+        except: 
+            pass

@@ -462,7 +462,7 @@ function addLocation() {
         
         // remove new location marker 
         mainMarker.remove()
-        
+
         console.log(res.message)
     })
 
@@ -515,13 +515,12 @@ function addMarker(lat, lng, locationData) {
     let popupContent = createPopupContent(locationData)
     marker.bindPopup(popupContent)
     marker.openPopup()
-    console.log(allMarkers)
+    
     // add new marker to global list of markers
     allMarkers.push({
         id: parseInt(locationId),
         marker: marker,
     })
-    console.log(allMarkers)
 }
 
 
@@ -688,3 +687,4 @@ function deleteMarkers(locationsIds) {
         }
     })
 }
+
