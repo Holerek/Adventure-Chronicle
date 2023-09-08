@@ -1,4 +1,4 @@
-import {getCookie, deactivateBackground, createConfirmationPopup} from "./util.js"
+import {getCookie, deactivateBackground, createConfirmationPopup, deactivatePopup} from "./util.js"
 
 
 // variable to control state or behavior of functions
@@ -263,6 +263,9 @@ function deleteLocation() {
     // create popup that asks for confirmation and return elements to interact 
     [popup, cancelButton, deleteButton] = createConfirmationPopup(locationName)
 
+    // deactivate popup
+    deactivatePopup(true, 'edit-location-div')
+
     deleteButton.onclick = function() {
         fetch('/delete-location', {
             method: 'POST',
@@ -280,13 +283,20 @@ function deleteLocation() {
 
         //remove confirmation popup 
         popup.remove()
+
+        //reactivate edit day popup
+        deactivatePopup(false, 'edit-location-div')
         
         //hide popup and reset activeEditDayPopup value 
         hidePopup()
     }
 
     cancelButton.onclick = function() {
+        //close confirmation popup
         popup.remove()
+
+        //reactivate edit day popup
+        deactivatePopup(false, 'edit-location-div')
     }
 }
 
@@ -343,6 +353,9 @@ function deleteDay() {
     // create popup that asks for confirmation and return elements to interact 
     [popup, cancelButton, deleteButton] = createConfirmationPopup(date)
 
+    // deactivate popup
+    deactivatePopup(true, 'edit-day-div')
+
     deleteButton.onclick = function() {
         fetch('/delete-day', {
             method: 'POST',
@@ -360,6 +373,9 @@ function deleteDay() {
     
             //remove confirmation popup 
             popup.remove()
+
+            //reactivate edit day popup
+            deactivatePopup(false, 'edit-day-div')
             
             //hide edit day popup and reset activeEditDayPopup value 
             hidePopup()
@@ -368,6 +384,9 @@ function deleteDay() {
     
     cancelButton.onclick = function() {
         popup.remove()
+
+        //reactivate edit day popup
+        deactivatePopup(false, 'edit-day-div')
     }
 }
 

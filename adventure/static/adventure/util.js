@@ -40,6 +40,22 @@ export function deactivateBackground(state) {
 }
 
 
+export function deactivatePopup(state, elementId) {
+    const activePopup = document.getElementById(elementId)
+
+    if (state) {
+        //disable popup
+        activePopup.style.opacity = 0.5
+        activePopup.style.pointerEvents = "none"
+    }
+    else {
+        //enable popup
+        activePopup.style.opacity = 1
+        activePopup.style.pointerEvents = "auto"
+    }
+}
+
+
 export function createConfirmationPopup(elementTitle) {
     //create popup elements
     const popup = document.createElement('div')
