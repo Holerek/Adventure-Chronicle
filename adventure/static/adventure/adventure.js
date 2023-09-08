@@ -457,7 +457,12 @@ function addLocation() {
     .then( res => {
         hideNewLocationForm(formData.get('new_location_day'))
         createLocationItem(formData, res.new_location_id)
-        mainMarker.hidePopup
+        // go back to normal on map click event
+        addLocationStatus = false
+        
+        // remove new location marker 
+        mainMarker.remove()
+        
         console.log(res.message)
     })
 
@@ -480,7 +485,10 @@ function hideNewLocationForm(dayId) {
 
 
 function loadMarkers() {
+    // load data from server
     const markersData = JSON.parse(document.getElementById('markers-data').textContent)
+    
+    // create marker for each location in each day
     markersData.forEach( day => {
         let locations = day.locations
         locations.forEach( location => {
@@ -489,6 +497,7 @@ function loadMarkers() {
             var popupContent = createPopupContent(location)
             marker.bindPopup(popupContent)
 
+            // add latest marker to global list of markers
             allMarkers.push({
                 id: location.pk,
                 marker: marker,
@@ -499,10 +508,20 @@ function loadMarkers() {
 
 
 function addMarker(lat, lng, locationData) {
-    let marker = L.marker([lat, lng], {alt: `marker-id-${locationData.fields.pk}`}).addTo(map)
+    // pk is inside fields because locationData was prepared by createLocationItem and not by parsing data from server
+    
+    const locationId = locationData.fields.pk
+    let marker = L.marker([lat, lng], {alt: `marker-id-${locationId}`}).addTo(map)
     let popupContent = createPopupContent(locationData)
     marker.bindPopup(popupContent)
     marker.openPopup()
+    console.log(allMarkers)
+    // add new marker to global list of markers
+    allMarkers.push({
+        id: parseInt(locationId),
+        marker: marker,
+    })
+    console.log(allMarkers)
 }
 
 
