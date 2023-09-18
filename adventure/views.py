@@ -46,28 +46,19 @@ def adventure(request, id, message=None):
     # check if user is author
     if request.user == adventure.author: 
         #load all days for requested adventure
-        days = Day.objects.filter(adventure = id).order_by("date")
+        days = adventure.day_set.all().order_by("date")
         
-        
+        # create list of tuples (day, locations) 
         days_and_locations = []
-        
-        # add locations to days 
-        if days:
-            for i in range(0, len(days)):
-                locations = Location.objects.filter(day=days[i])
-                days_and_locations.append((days[i], locations))
-        
+        for day in days:
+            days_and_locations.append((day, day.location_set.all()))
+    
         # convert days and locations query sets to json list
         json_days = json.loads(serializers.serialize('json', days))
-
-        if days:
-            for i in range(len(days)):
-                
-                locations = Location.objects.filter(day=days[i])
-                json_locations = json.loads(serializers.serialize('json', locations))
-                
-                json_days[i]['locations'] = json_locations
-
+        for i, day in enumerate(days):
+            locations = day.location_set.all()
+            json_locations = json.loads(serializers.serialize('json', locations))
+            json_days[i]['locations'] = json_locations
 
 
         return render(request, 'adventure/adventure.html',{
@@ -80,6 +71,7 @@ def adventure(request, id, message=None):
             'edit_location': EditLocationForm(),
             'message': message,
             'markers_data': json_days,
+            'adv': adventure,
         })
     
     return render(request, 'adventure/layout.html', {
