@@ -1,13 +1,13 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-# Create your models here.
 
 
 class Adventure(models.Model):
     title = models.CharField(max_length=128)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     is_public = models.BooleanField(default=False)
+
 
 class Day(models.Model):
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE)
@@ -17,7 +17,6 @@ class Day(models.Model):
     # routs = models.ManyToManyField(Rout, related_name="routs_of_day")
 
     
-
 class Location(models.Model):
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE)

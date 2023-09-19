@@ -9,6 +9,7 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from django.db.models import Count
 from .models import Adventure, Day, Location
 from .forms import NewAdventureForm, EditAdventureForm, NewDayForm, EditDayForm, NewLocationForm, EditLocationForm
 
@@ -48,11 +49,10 @@ def adventure(request, id, message=None):
         #load all days for requested adventure
         days = adventure.day_set.all().order_by("date")
         
-        # create list of tuples (day, locations) 
-        days_and_locations = []
-        for day in days:
-            days_and_locations.append((day, day.location_set.all()))
-    
+        # create list of tuples (day, locations_list) 
+        days_and_locations = [(day, day.location_set.all()) for day in days]
+        
+        
         # convert days and locations query sets to json list
         json_days = json.loads(serializers.serialize('json', days))
         for i, day in enumerate(days):
