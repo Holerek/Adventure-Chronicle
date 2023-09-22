@@ -68,37 +68,36 @@
         {{ new_location }}
         <input class="input-button save" id="submit-new-location" type="submit" value="Submit"></submit>
     </form>
-
-    {% for day, locations in days %}
-        <div class="adv-item" id="day-{{day.id}}">
-            <h3>{{ day.date|date:"Y-m-d" }}</h3>
-            <span>{{ day.description }}</span>
-            <button type="button" class="edit" data-id="{{day.id}}" >Edit day</button>
-            <img class="show-more arrow-down" src="{% static 'adventure/img/arrow-down.svg' %}" alt="show location arrow">
-        
-        
+    <div class="days-container">
+        {% for day, locations in days %}
+            <div class="adv-item" id="day-{{day.id}}">
+                <h3>{{ day.date|date:"Y-m-d" }}</h3>
+                <span>{{ day.description }}</span>
+                <button type="button" class="edit" data-id="{{day.id}}" >Edit day</button>
+                <img class="show-more arrow-down" src="{% static 'adventure/img/arrow-down.svg' %}" alt="show location arrow">
             
-            <div class="location-list" id="location-list-{{day.id}}">
+            
                 <button type="button" class="add-location" data-id="{{day.id}}" >Add Location</button>
-                {% for location in locations %}
-                    <div class="location-item location" id="location-{location.id}">
-                        <strong>{{location.name}}</strong>
-                        {% if location.photo %}
-                        <img src="{{location.photo.url}}" alt="location image" >
-                        {% else %}
-                        <em>no image yet</em>
-                        {% endif %}
-                        <span>{{location.description}}</span>
-                        <button type="button" class="edit" data-id="{{location.id}}" >Edit location</button>
-                    </div>
-                {% endfor %}
+                <div class="location-list" id="location-list-{{day.id}}">
+                    {% for location in locations %}
+                        <div class="location-item location" id="location-{location.id}">
+                            <strong>{{location.name}}</strong>
+                            {% if location.photo %}
+                            <img src="{{location.photo.url}}" alt="location image" >
+                            {% else %}
+                            <em>no image yet</em>
+                            {% endif %}
+                            <span>{{location.description}}</span>
+                            <button type="button" class="edit" data-id="{{location.id}}" >Edit location</button>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
 
-    {% empty %}
-        <span> No days yet. </span>
-    {% endfor %}
-
+        {% empty %}
+            <span> No days yet. </span>
+        {% endfor %}
+    </div>
 {% endblock %}
 
 

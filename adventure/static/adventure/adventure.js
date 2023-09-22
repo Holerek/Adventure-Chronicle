@@ -328,17 +328,20 @@ function showMore() {
         const parent = arrow.parentElement
         const parentChildren = parent.children
             
-        const locationList = parentChildren[4]
+        const locationButton = parentChildren[4]
+        const locationList = parentChildren[5]
         locationList.style.display = "none"
 
         arrow.onclick = function() {
 
             if (locationList.style.display === "none") {
                 locationList.style.display = "flex"
+                locationButton.style.display = "block"
                 arrow.classList.add('arrow-up')
             }
             else {
                 locationList.style.display = "none"
+                locationButton.style.display = "none"
                 arrow.classList.remove('arrow-up')
             }
         }
@@ -407,10 +410,8 @@ function ActivateAddLocationButtons () {
             const addLocationDay = document.getElementById('id_new_location_day')
             if (button.innerHTML === 'Hide') {
                 hideNewLocationForm(button.dataset.id)
-                // newLocationForm.style.display = 'none'
                 addLocationStatus = false
                 addLocationDay.value = undefined
-                // button.innerHTML = 'Add Location'
             }
             else {
                 // reset all add location buttons
@@ -478,7 +479,7 @@ function hideNewLocationForm(dayId) {
     newLocationForm.reset()
 
     // change button innerHTML
-    document.getElementById(`location-list-${dayId}`).children[0].innerHTML = 'Add Location'
+    document.getElementById(`day-${dayId}`).children[5].innerHTML = 'Add Location'
 }
 
 

@@ -1,5 +1,5 @@
 {% extends "adventure/layout.html" %}
-
+{% load static %}
 {% block body %}
 <h2>Login</h2>
 
@@ -13,9 +13,14 @@
         <input type="password" name="password" placeholder="Password">
         <input type="submit" value="Login">
     </form>
-    <div>
+    <div style="text-align: center;">
         Don't have an account? 
+        <br>
         <a href="{% url 'register' %}">Register here.</a>
     </div>
 
+{% endblock %}
+
+{% block map-script %}
+    <script src="{% static 'adventure/map.js' %}" type="module"></script>
 {% endblock %}
