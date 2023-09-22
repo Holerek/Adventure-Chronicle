@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.core import serializers
 from django.db import IntegrityError
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.db.models import Count
@@ -43,7 +43,8 @@ def adventure(request, id, message=None):
     except:
         pass
     
-    adventure = Adventure.objects.get(pk = id)
+    # adventure = Adventure.objects.get(pk = id)
+    adventure = get_object_or_404(Adventure, pk=id)
     # check if user is author
     if request.user == adventure.author: 
         #load all days for requested adventure
@@ -216,7 +217,7 @@ def delete_day(request):
         # create list of locations image file names for deleting them
         locations_images = [location.photo for location in locations]
         
-        print(locations_images)
+
         if request.user == day.adventure.author:
             day.delete()
 
