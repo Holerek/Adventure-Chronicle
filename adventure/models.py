@@ -30,8 +30,8 @@ class Day(models.Model):
 
 
 class Location(models.Model):
-    day = models.ForeignKey(Day, on_delete=models.CASCADE)
-    adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE)
+    day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name='day_locations')
+    adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='adventure_locations')
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=5000)
     photo = models.ImageField(null=True, blank=True, upload_to='images/')

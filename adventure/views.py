@@ -50,13 +50,13 @@ def adventure(request, id, message=None):
         days = adventure.adventure_days.all().order_by("date")
         
         # create list of tuples (day, locations_list) 
-        days_and_locations = [(day, day.location_set.all()) for day in days]
+        days_and_locations = [(day, day.day_locations.all()) for day in days]
         
         
         # convert days and locations query sets to json list
         json_days = json.loads(serializers.serialize('json', days))
         for i, day in enumerate(days):
-            locations = day.location_set.all()
+            locations = day.day_locations.all()
             json_locations = json.loads(serializers.serialize('json', locations))
             json_days[i]['locations'] = json_locations
 
