@@ -47,7 +47,7 @@ def adventure(request, id, message=None):
     # check if user is author
     if request.user == adventure.author: 
         #load all days for requested adventure
-        days = adventure.day_set.all().order_by("date")
+        days = adventure.adventure_days.all().order_by("date")
         
         # create list of tuples (day, locations_list) 
         days_and_locations = [(day, day.location_set.all()) for day in days]
