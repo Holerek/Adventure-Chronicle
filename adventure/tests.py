@@ -1,7 +1,7 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from .models import Adventure, Day, Location
 from django.contrib.auth.models import User
-
+from django.db.models import Max
 
 
 
@@ -10,8 +10,8 @@ class AdventureTestCase(TestCase):
     def setUp(self):
 
         #create users
-        user1 = User.objects.create(username='user1', password='user1')
-        user2 = User.objects.create(username='user2', password='user2')
+        user1 = User.objects.create(username='user1')
+        user2 = User.objects.create_user(username='user2', password='user2')
 
         #create adventures
         a1 = Adventure.objects.create(title='a1', author=user1)
@@ -24,32 +24,12 @@ class AdventureTestCase(TestCase):
         d3 = Day.objects.create(adventure=a2, description='day 3', date='2023-09-12')
 
         #create location
-        l1 = Location.objects.create(
-            day=d1,
-            adventure=a1,
-            name='location 1 name',
-            description='location 1 description',
-            lat=50.1,
-            lng=16.1
-        )
+        l1 = Location.objects.create(day=d1, adventure=a1, name='location 1 name', description='location 1 description', lat=50.1, lng=16.1)
+        l2 = Location.objects.create(day=d1, adventure=a3, name='location 2 name', description='location 2 description', lat=50.0, lng=16.0)
+        l3 = Location.objects.create(day=d2,  adventure=a2,  name='location 3 name', description='location 3 description',  lat=50.2,  lng=16.2 )
+        l4 = Location.objects.create(day=d3,  adventure=a2,  name='location 4 name', description='location 4 description',  lat=50.4,  lng=16.4 )
+        l5 = Location.objects.create(day=d3,  adventure=a2,  name='location 5 name', description='location 5 description',  lat=50.4,  lng=16.4 )
 
-        l2 = Location.objects.create(
-            day=d1,
-            adventure=a2,
-            name='location 2 name',
-            description='location 2 description',
-            lat=50.0,
-            lng=16.0
-        )
-
-        l3 = Location.objects.create(
-            day=d1, 
-            adventure=a2, 
-            name='location 3 name',
-            description='location 3 description', 
-            lat=50.2, 
-            lng=16.2
-            )
 
     def test_adventure_count(self):
         """Check if adventure count = 2"""
@@ -66,7 +46,7 @@ class AdventureTestCase(TestCase):
     def test_location_count(self):
         """Check if location count = 2"""
         a = Adventure.objects.get(title='a2').adventure_locations
-        self.assertEqual(a.count(), 2)
+        self.assertEqual(a.count(), 3)
 
 
     def test_adventure_duration(self):
@@ -86,3 +66,72 @@ class AdventureTestCase(TestCase):
         """Check default valuer for is_public field in Adventure model"""
         a = Adventure.objects.get(title='a1')
         self.assertTrue(a.is_public == False)
+
+    
+    def test_index_view(self):
+        
+        # set up client
+        c = Client()
+
+        # Check if none logged in user receive empty adventure queryset
+        response = c.get('/')
+        self.assertEqual(response.status_code, 200) 
+        self.assertEqual(response.context['adventures'].count(), 0)
+
+        # login
+        logged_id = c.login(username='user2', password='user2')
+        self.assertTrue(logged_id, 'User failed to log in')
+
+        # Check if logged in user receive none empty adventure queryset
+        response = c.get('')
+        self.assertEqual(response.status_code, 200) 
+        self.assertEqual(response.context['adventures'].count(), 2)
+
+
+    def test_logout_adventure_view(self):
+        
+        # set up client
+        c = Client()
+
+        # not logged in user should be redirect to log in page regardless of adventure id
+        response = c.get(f'/adventure/2323')
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/login')) 
+
+
+    def test_login_adventure_view(self):
+        
+        c = Client()
+        a = Adventure.objects.get(title='a2')
+
+        #login
+        logged_id = c.login(username='user2', password='user2')
+        self.assertTrue(logged_id, 'User failed to log in')
+
+        # Check if logged in user receive list of tuples [(Day QuerySet, Location QuerySet),..]
+        response = c.get(f'/adventure/{a.id}')
+        self.assertEqual(response.status_code, 200) 
+
+        # number of days is the same as number of items in the list
+        self.assertEqual(len(response.context['days']), 2)
+        
+        # extract all location and add all. 
+        self.assertEqual(sum([len(l) for d, l in response.context['days']]), 3)
+
+        #try to open nonexisting adventure
+        max_id = Adventure.objects.aggregate(max=Max("pk"))['max']
+        response = c.get(f'/adventures/{max_id + 1}')
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_login_view(self):
+
+        c = Client()
+
+        #invalid login
+        response = c.post('/login', {'username': 'usersssss2', 'password':'user2'})
+        self.assertTrue(response.status_code == 200 and len(response.context['message']) > 0)
+
+        #valid login
+        response = c.post('/login', {'username': 'user2', 'password':'user2'})
+        self.assertTrue(response.status_code == 302 and response.url == '/')
