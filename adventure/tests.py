@@ -135,3 +135,18 @@ class AdventureTestCase(TestCase):
         #valid login
         response = c.post('/login', {'username': 'user2', 'password':'user2'})
         self.assertTrue(response.status_code == 302 and response.url == '/')
+
+    
+    def test_create_adventure(self):
+
+        c = Client()
+        c.login(username='user2', password='user2')
+        title = 'create new location test'
+        response = c.post('/create-adventure', {
+            'title': title,
+        })
+
+        self.assertEqual(response.status_code, 302)
+        
+        new_adv = Adventure.objects.get(title=title)
+        self.assertTrue(isinstance(new_adv, Adventure))
