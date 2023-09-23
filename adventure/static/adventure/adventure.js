@@ -424,9 +424,10 @@ function ActivateAddLocationButtons () {
                 button.innerHTML = 'Hide'
                 newLocationForm.style.marginTop = '10px'
                 newLocationForm.style.marginBottom = '10px'
-
-                const parent = button.parentElement
-                parent.insertBefore(newLocationForm, parent.children[1])
+                const locationList = document.getElementById(`location-list-${button.dataset.id}`)
+                // const parent = button.parentElement
+                // parent.insertBefore(newLocationForm, parent.children[1])
+                locationList.prepend(newLocationForm)
                 // parent.prepend(newLocationForm)
                 newLocationForm.style.display = 'flex'
 
@@ -479,7 +480,7 @@ function hideNewLocationForm(dayId) {
     newLocationForm.reset()
 
     // change button innerHTML
-    document.getElementById(`day-${dayId}`).children[5].innerHTML = 'Add Location'
+    document.getElementById(`day-${dayId}`).children[4].innerHTML = 'Add Location'
 }
 
 
