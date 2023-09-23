@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from .models import Adventure, Day, Location
 from django.contrib.auth.models import User
 from django.db.models import Max
+from selenium import webdriver
 
 
 
@@ -138,15 +139,28 @@ class AdventureTestCase(TestCase):
 
     
     def test_create_adventure(self):
-
+        """Check that logged in user can create new Adventure"""
+        # create client and log user in 
         c = Client()
         c.login(username='user2', password='user2')
+        
+        # send post request with Adventure data
         title = 'create new location test'
         response = c.post('/create-adventure', {
             'title': title,
         })
 
+        #redirect to index page
         self.assertEqual(response.status_code, 302)
         
         new_adv = Adventure.objects.get(title=title)
         self.assertTrue(isinstance(new_adv, Adventure))
+
+
+class WebpageTests(TestCase):
+    
+    driver = webdriver.Chrome()
+
+    def test_title(self):
+        self.driver.get('http://localhost:8000')
+        self.assertEqual(self.driver.title, 'Adventure Chronicle')

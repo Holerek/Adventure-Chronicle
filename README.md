@@ -12,13 +12,12 @@
 Web application, written in django framework for keeping track of our adventures/journeys. Every adventure contains days and each day can contains many locations/routes. All locations can be displayed on map through usage of leaflet library.
 
 ## Requirements
-* [django](https://www.djangoproject.com/) - core framework.
+* [django 4.2](https://www.djangoproject.com/) - core framework.
 * [pillow](https://pypi.org/project/Pillow/) - uploading images
 
 ## To Do:
 * allow to change coordinates of existing markers
 * shearing adventures with other users
-* testing - unit testing for models 
 * testing - client site (selenium)
 
 ## How to run
