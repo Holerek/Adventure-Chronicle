@@ -1,8 +1,11 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from .models import Adventure, Day, Location
 from django.contrib.auth.models import User
 from django.db.models import Max
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from time import sleep
 
 
 
@@ -157,10 +160,52 @@ class AdventureTestCase(TestCase):
         self.assertTrue(isinstance(new_adv, Adventure))
 
 
-class WebpageTests(TestCase):
+
+driver = webdriver.Chrome()
+
+class WebpageTests(StaticLiveServerTestCase):
+
+    def setUp(self):
+        #create user
+        user3 = User.objects.create_user(username='user3', password='user3')
     
-    driver = webdriver.Chrome()
 
     def test_title(self):
-        self.driver.get('http://localhost:8000')
-        self.assertEqual(self.driver.title, 'Adventure Chronicle')
+        driver.get(self.live_server_url)
+        self.assertEqual(driver.title, 'Adventure Chronicle')
+
+
+    def test_create_adventure(self):
+        # load login page 
+        driver.get(self.live_server_url + '/login')
+        heading = driver.find_element(by=By.TAG_NAME, value='h2').text
+        self.assertEqual(heading, 'Login')
+        
+        # select login form fields and button
+        username_field = driver.find_element(by=By.NAME, value='username')
+        password_field = driver.find_element(by=By.NAME, value='password')
+        submit_button = driver.find_element(by=By.CSS_SELECTOR, value='input[type="submit"]')
+
+        # insert data and submit the form 
+        username_field.send_keys('user3')
+        password_field.send_keys('user3')
+        submit_button.click()
+        
+        # check that successful logged in and redirect to main page
+        logged_in_username = driver.find_element(by=By.ID, value='logged-in-username').text
+        heading = driver.find_element(by=By.CLASS_NAME, value='title').text
+        self.assertEqual(logged_in_username, 'User3:')
+        self.assertEqual(heading, 'Adventure Chronicles')
+
+        # create new adventure
+        driver.find_element(by=By.ID, value='newAdventureButton').click()
+        driver.find_element(by=By.ID, value='id_title').send_keys('Selenium Adv')
+        driver.find_element(by=By.CSS_SELECTOR, value='input[type="submit"]').click()
+
+        # Check that adventure was created
+        div = driver.find_element(by=By.CLASS_NAME, value='adventure-item')
+        adv_title = div.find_element(by=By.TAG_NAME, value='span').text
+        self.assertEqual(adv_title, 'Selenium Adv')
+
+
+

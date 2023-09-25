@@ -30,7 +30,7 @@
         <div>
             <nav class="nav">
                 {% if user.is_authenticated %}
-                    <span style="font-weight: bold;">{{request.user.username|title}}:</span>
+                    <span id="logged-in-username" style="font-weight: bold;">{{request.user.username|title}}:</span>
                 {% endif%}
 
                 <a href="{% url 'index' %}">Home</a>
