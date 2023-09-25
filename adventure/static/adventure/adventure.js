@@ -121,9 +121,9 @@ function activateEditDayButtons() {
 
             //select edit day input fields
             const editDayForm = document.querySelector("#edit-form")
-            const popupChilds = editDayForm.children
-            const editDate = popupChilds[3]
-            const editDescription = popupChilds[5]
+            const popupChildren = editDayForm.children
+            const editDate = popupChildren[3]
+            const editDescription = popupChildren[5]
 
             //prefill input fields with present data
             editDate.value = date.innerHTML
