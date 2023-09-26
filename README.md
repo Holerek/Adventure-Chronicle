@@ -1,5 +1,5 @@
 # Adventure Chronicle
-#### Video Demo: TODO
+#### Video Demo: https://youtu.be/5AoR3o60rkc
 ### Presentation
 
 ![Adding new location](presentation1.png)
