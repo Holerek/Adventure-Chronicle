@@ -23,7 +23,7 @@
                 <h2>Edit Day </h2>
                 <button type="button" id="edit-day-cancel" name="edit-day-cancel" class="cancel">Cancel</button>
                 <button type="button" id="edit-day-delete" name="edit-day-delete" class="delete">Delete</button>
-            </div>    
+            </div>
             {% csrf_token%}
             {{ edit_day }}
             <input type="hidden" id="day_id" name="day_id" value=""></submit>
@@ -37,7 +37,7 @@
                     <h2>Edit Location </h2>
                     <button type="button" id="edit-location-cancel" name="edit-location-cancel" class="cancel">Cancel</button>
                     <button type="button" id="edit-location-delete" name="edit-location-delete" class="delete">Delete</button>
-                </div>   
+                </div>
                 {% csrf_token%}
                 {{ edit_location }}
                 <input class="input-button save" type="submit" value="Save changes"></submit>
@@ -75,8 +75,8 @@
                 <span>{{ day.description }}</span>
                 <button type="button" class="edit" data-id="{{day.id}}" >Edit day</button>
                 <img class="show-more arrow-down" src="{% static 'adventure/img/arrow-down.svg' %}" alt="show location arrow">
-            
-            
+
+
                 <button type="button" class="add-location" data-id="{{day.id}}" >Add Location</button>
                 <div class="location-list" id="location-list-{{day.id}}">
                     {% for location in locations %}

@@ -24,7 +24,7 @@ def index(request):
         message = request.GET['message']
     except:
         message = None
-    
+
     adventures = Adventure.objects.filter(author = request.user.id)
     return render(request, 'adventure/index.html', {
         'message': message,
@@ -36,24 +36,23 @@ def index(request):
 
 @login_required
 def adventure(request, id, message=None):
-    
+
     # check if there is a message
     try:
         message = request.GET['message']
     except:
         pass
-    
+
     # adventure = Adventure.objects.get(pk = id)
     adventure = get_object_or_404(Adventure, pk=id)
     # check if user is author
-    if request.user == adventure.author: 
+    if request.user == adventure.author:
         #load all days for requested adventure
         days = adventure.adventure_days.all().order_by("date")
         
-        # create list of tuples (day, locations_list) 
+        # create list of tuples (day, locations_list)
         days_and_locations = [(day, day.day_locations.all()) for day in days]
-        
-        
+
         # convert days and locations query sets to json list
         json_days = json.loads(serializers.serialize('json', days))
         for i, day in enumerate(days):
@@ -74,7 +73,7 @@ def adventure(request, id, message=None):
             'markers_data': json_days,
             'adv': adventure,
         })
-    
+
     return render(request, 'adventure/layout.html', {
         'message': "Permission Denied!",
     })
@@ -85,14 +84,14 @@ def create_delete_adventure(request):
      #post request create new adventure in db
     if request.method == "POST":
         form = NewAdventureForm(request.POST)
-        
+
         #if data is valid then create and save new object
         if form.is_valid():
             data = form.cleaned_data
             new_adv = Adventure(title=data['title'], author = request.user)
             new_adv.save()
-        
-        
+
+
     if request.method == "DELETE":
         user = request.user
         data = json.loads(request.body)
@@ -121,21 +120,21 @@ def create_delete_adventure(request):
 @login_required
 @require_http_methods(['POST'])
 def edit_adventure(request):
-    
+
     form = EditAdventureForm(request.POST)
-    
+
     if form.is_valid():
         data = form.cleaned_data
         adventure = Adventure.objects.get(pk=data['edit_adventure_id'])
-        
-        #validate if user is an author of adventure 
+
+        #validate if user is an author of adventure
         if request.user == adventure.author:
             adventure.title = data['edit_adventure_title']
             adventure.save()
 
             return JsonResponse({
                 'message': 'Adventure has been modified'
-            })      
+            })
 
     return HttpResponse('400 Invalid data')
 
@@ -146,7 +145,7 @@ def day(request):
         form = NewDayForm(request.POST)
         adv_id = request.POST['adv_id']
         reload_path = reverse('adventure', args=[adv_id])
-        
+
         if form.is_valid():
             data = form.cleaned_data
 
@@ -154,14 +153,14 @@ def day(request):
             if request.user == Adventure.objects.get(pk=adv_id).author:
                 new_day = Day(adventure=Adventure.objects.get(pk=adv_id), description=data['description'], date=data['date'])
                 new_day.save()
-            
+
             # message for not authenticated user
             else:
                 return redirect(reload_path + '?message=Think again!!!')
-            
+
             # reload page after successful update
             return redirect(reload_path)
-        
+
         # invalid data message
         else:
             return redirect(reload_path + '?message=Invalid date!')
@@ -176,7 +175,7 @@ def edit_day(request):
         form = EditDayForm(request.POST)
         adv_id = request.POST['adv_id']
         day_id = request.POST['day_id']
-        
+
         reload_path = reverse('adventure', args=[adv_id])
 
         if form.is_valid():
@@ -191,10 +190,10 @@ def edit_day(request):
             # message for not authenticated user
             else:
                 return redirect(reload_path + '?message=Think again!!!')
-            
+
             # reload page after successful update
             return redirect(reload_path)
-        
+
         # invalid data message
         else:
             return redirect(reload_path + '?message=Invalid date!')
@@ -209,14 +208,14 @@ def delete_day(request):
     if request.method == "POST":
         data = json.loads(request.body)
         day = Day.objects.get(pk=data['day_id'])
-        
+
         # create list of locations id for deleting markers on map
         locations = Location.objects.filter(day=day)
         locations_ids = [location.pk for location in locations]
 
         # create list of locations image file names for deleting them
         locations_images = [location.photo for location in locations]
-        
+
 
         if request.user == day.adventure.author:
             day.delete()
@@ -226,14 +225,14 @@ def delete_day(request):
 
             return JsonResponse({'message': 'Deletion completed',
                                  'locations': locations_ids,})
-    
+
     # go back to main page after GET request
     return redirect(reverse('index'))
 
 
 @login_required
 def new_location(request):
-    
+
     if request.method == 'POST':
         form = (NewLocationForm(request.POST, request.FILES))
 
@@ -241,7 +240,7 @@ def new_location(request):
             data = form.cleaned_data
 
         day = Day.objects.get(pk=data['new_location_day'])
-        
+
         # validate if user is and author of day
         if request.user == day.adventure.author:
             new_location = Location(
@@ -254,7 +253,7 @@ def new_location(request):
                 photo = data['new_location_img']
             )
             new_location.save()
-            
+
         return JsonResponse({
             'message': 'Location added.',
             'new_location_id': f'{new_location.id}'
@@ -266,27 +265,27 @@ def new_location(request):
 
 @login_required
 def edit_location(request):
-    
+
     if request.method == 'POST':
         form = (EditLocationForm(request.POST, request.FILES))
 
         if form.is_valid():
             data = form.cleaned_data
             location = Location.objects.get(pk=data['edit_location_id'])
-            
+
             # validate if user is and author of day
             if request.user == location.adventure.author:
-                
+
                 location.name = data['edit_location_name']
                 location.description = data['edit_location_description']
-                
-                # prevent deleting existing img if no image was send 
+
+                # prevent deleting existing img if no image was send
                 if data['edit_location_img']:
                     delete_images([location.photo])
                     location.photo = data['edit_location_img']
-                
+
                 location.save()
-                
+
             return JsonResponse({
                 'message': 'Location has been modified'
             })
@@ -298,15 +297,15 @@ def edit_location(request):
 def delete_location(request):
 
     if request.method == 'POST':
-        
-        # load location data 
+
+        # load location data
         data = json.loads(request.body)
 
         location = Location.objects.get(pk=data['location_id'])
 
         file_name = location.photo
         delete_images([file_name])
-        
+
         # validate if user is an author of location
         if location.adventure.author == request.user:
             location.delete()
@@ -327,7 +326,7 @@ def login_view(request):
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
 
-        # check if user was authenticated 
+        # check if user was authenticated
         if user is not None:
             login(request, user)
             return HttpResponseRedirect(reverse('index'))
@@ -357,14 +356,14 @@ def register(request):
             })
 
         # create a new user
-        try: 
+        try:
             user = User.objects.create_user(username=username, password=password)
             user.save()
         except IntegrityError:
             return render(request, 'adventure/register.html', {
                 "message": "Username already taken."
             })
-        
+
         login(request, user)
         return HttpResponseRedirect(reverse('index'))
     else:
@@ -380,5 +379,5 @@ def delete_images(files_names):
         # if there is an image then delete it
         try:
             os.remove(image_path)
-        except: 
+        except:
             pass
