@@ -6,7 +6,7 @@ body {
     font-family: sans-serif;
 }
 
-.title { 
+.title {
     text-align: center;
     margin-top: 0;
 }
@@ -39,11 +39,11 @@ body {
     border-radius: 10px;
     margin:10px;
     padding:10px;
-    font-size: 1.5rem;  
+    font-size: 1.5rem;
     display: flex;
     flex-direction: row;
     z-index: 1;
-    
+
 }
 
 .adventure-item > img {
@@ -143,7 +143,7 @@ body {
 
 .adv-item {
     width: calc(100% - 20px);
-    display: flex; 
+    display: flex;
     flex-direction: column;
     /* border-top: 2px solid black; */
     border-bottom: 2px solid black;
@@ -155,7 +155,7 @@ body {
 
 .adv-form {
     width: calc(100% - 44px);
-    display: flex; 
+    display: flex;
     flex-direction: column;
     border: 2px solid black;
     border-radius: 5px;
@@ -288,14 +288,14 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
     align-items: center;
     width: calc(100% - 22px);
     max-height: 50vh;
-    padding: 10px; 
+    padding: 10px;
     overflow: scroll;
     overflow-x: hidden;
 }
 
 .location-item{
     width: calc(100% - 10px);
-    display: flex; 
+    display: flex;
     flex-direction: column;
     border: 1px solid black;
     border-radius: 5px;
@@ -319,7 +319,7 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
 
 .location-popup{
     font-size: 1rem;
-    display: flex; 
+    display: flex;
     flex-direction: column;
 }
 
@@ -331,12 +331,12 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
 
 .location-item > * {
     margin-top: 5px;
-    margin-bottom: 5px; 
+    margin-bottom: 5px;
 }
 
 .location > img {
     max-width: 50%;
-   
+
 }
 
 .location {
@@ -344,13 +344,13 @@ button:hover, .input-button:hover, a:hover, .adventure-item:hover {
 }
 
 #new-location-form {
-    
+
     display: none;
 }
 
 .w100 {
     width: 100%;
-    
+
 }
 
 .show-more {

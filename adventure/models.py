@@ -11,13 +11,13 @@ class Adventure(models.Model):
 
     def __str__(self):
         return f'adv: {self.title}'
-    
+
     def adventure_duration(self):
         start = self.adventure_days.aggregate(date=Min('date'))
         end = self.adventure_days.aggregate(date=Max('date'))
         delta = end['date'].day-start['date'].day
         return delta + 1
-    
+
 
 
 class Day(models.Model):
@@ -30,7 +30,7 @@ class Day(models.Model):
 
 
 class Location(models.Model):
-    day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name='day_locations')
+    day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name='locations')
     adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, related_name='adventure_locations')
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=5000)
@@ -41,8 +41,8 @@ class Location(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def is_valid_location(self):
         return self.adventure.author == self.day.adventure.author
-    
+
 

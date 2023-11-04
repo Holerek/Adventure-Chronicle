@@ -9,7 +9,7 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from django.db.models import Count
+from django.db.models import Count, Prefetch
 from .models import Adventure, Day, Location
 from .forms import NewAdventureForm, EditAdventureForm, NewDayForm, EditDayForm, NewLocationForm, EditLocationForm
 
@@ -43,27 +43,24 @@ def adventure(request, id, message=None):
     except:
         pass
 
-    # adventure = Adventure.objects.get(pk = id)
     adventure = get_object_or_404(Adventure, pk=id)
-    # check if user is author
-    if request.user == adventure.author:
-        #load all days for requested adventure
-        days = adventure.adventure_days.all().order_by("date")
-        
-        # create list of tuples (day, locations_list)
-        days_and_locations = [(day, day.day_locations.all()) for day in days]
 
-        # convert days and locations query sets to json list
+    if request.user == adventure.author:
+        # load all days for requested adventure
+        days = Day.objects.prefetch_related(
+            Prefetch('locations', queryset=Location.objects.filter(adventure=adventure))
+        ).filter(adventure=adventure).order_by("date")
+
+        # prepare json for js function that generates markers on map
         json_days = json.loads(serializers.serialize('json', days))
         for i, day in enumerate(days):
-            locations = day.day_locations.all()
+            locations = day.locations.all()
             json_locations = json.loads(serializers.serialize('json', locations))
             json_days[i]['locations'] = json_locations
 
-
         return render(request, 'adventure/adventure.html',{
             'id': id,
-            'days': days_and_locations,
+            'days': days,
             'adventure': adventure.title,
             'new_day': NewDayForm(),
             'edit_day': EditDayForm(),

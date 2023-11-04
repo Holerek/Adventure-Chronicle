@@ -69,7 +69,7 @@
         <input class="input-button save" id="submit-new-location" type="submit" value="Submit"></submit>
     </form>
     <div class="days-container">
-        {% for day, locations in days %}
+        {% for day in days %}
             <div class="adv-item" id="day-{{day.id}}">
                 <h3>{{ day.date|date:"Y-m-d" }}</h3>
                 <span>{{ day.description }}</span>
@@ -79,7 +79,7 @@
 
                 <button type="button" class="add-location" data-id="{{day.id}}" >Add Location</button>
                 <div class="location-list" id="location-list-{{day.id}}">
-                    {% for location in locations %}
+                    {% for location in day.locations.all %}
                         <div class="location-item location" id="location-{location.id}">
                             <strong>{{location.name}}</strong>
                             {% if location.photo %}
